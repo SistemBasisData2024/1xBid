@@ -1,5 +1,4 @@
 const { pool } = require('../config/db.config');
-const { authenticate } = require('../utils/Auth.utils');
 
 exports.getUserProfile = async (user_id) => {
     try {

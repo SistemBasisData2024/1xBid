@@ -55,7 +55,7 @@ create table if not exists Toko (
 create table if not exists Barang (
     barang_id uuid primary key default gen_random_uuid(),
     nama_barang varchar(255) not null,
-    last_price int not null,
+    last_price int not null default 0,
     harga_awal int not null,
     status statusBarang not null,
     start_time timestamp not null,
