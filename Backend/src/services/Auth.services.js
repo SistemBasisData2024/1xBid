@@ -4,11 +4,11 @@ const { pool } = require('../config/db.config');
 
 exports.register = async (body) => {
     try {
-        const { username, email, fullname, password, date_of_birth, phone_number, address } = body;
-        if (!username || !email || !fullname || !password || !date_of_birth || !phone_number || !address) throw new Error('All input is required');
+        const { username, email, fullname, password, date_of_birth, phone_number } = body;
+        if (!username || !email || !fullname || !password || !date_of_birth || !phone_number) throw new Error('All input is required');
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const response = await pool.query('INSERT INTO users (username, email, fullname, password, date_of_birth, phone_number, address) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [username, email, fullname, hashedPassword, date_of_birth, phone_number, address]);
+        const response = await pool.query('INSERT INTO users (username, email, fullname, password, date_of_birth, phone_number) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [username, email, fullname, hashedPassword, date_of_birth, phone_number]);
         return { message: 'User registered successfully', user: response.rows[0] }
     } catch (error) {
         return { message: error.message };
@@ -27,8 +27,8 @@ exports.login = async (body) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) throw new Error('Invalid credentials');
 
-        const token = jwt.sign({ id: user.user_id, role:user.role }, process.env.JWT_SECRET, { expiresIn: '12h' });
-        return { message: 'Login successfully', token };
+        const token = jwt.sign({ user_id: user.user_id, role:user.role }, process.env.JWT_SECRET, { expiresIn: '12h' });
+        return { message: 'Login successfully', data: { token, user } };
     } catch (error) {
         return { message: error.message };
     }

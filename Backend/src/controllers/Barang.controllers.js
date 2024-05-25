@@ -20,7 +20,7 @@ exports.getBarang = async (req, res) => {
 
 exports.updateBarang = async (req, res) => {
     try {
-        const response = await barangServices.updateBarang(req.body);
+        const response = await barangServices.updateBarang(req.params, req.body);
         res.status(200).json(response);
     } catch (err) {
         res.status(400).json({ message: err.message });

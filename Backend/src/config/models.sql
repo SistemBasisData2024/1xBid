@@ -1,7 +1,9 @@
 create type statusBarang as enum (
     'Available',
     'Sold',
-    'Not Available'
+    'Not Available',
+    'On Bid',
+    'Deleted'
 );
 
 create type roleUsers as enum (
@@ -33,9 +35,8 @@ create table if not exists Users (
     email varchar(255) not null unique,
     fullname varchar(255) not null,
     date_of_birth date not null,
-    address text not null,
     phone_number varchar(15) not null,
-    role roleUsers not null defatul 'User',
+    role roleUsers not null default 'User',
     created_at timestamp default now(),
     saldo int not null default 0,
     bid_violation int not null default 0,
@@ -87,12 +88,22 @@ create table if not exists Transaksi (
     barang_id uuid references Barang(barang_id) on delete cascade,
     user_id uuid references Users(user_id) on delete cascade,
     toko_id uuid references Toko(toko_id) on delete cascade,
-    status statusTransaksi not null,
+    status statusTransaksi not null default 'Pending',
     created_at timestamp default now(),
     price int not null,
     payment_option paymentOption not null,
-    payment_at timestamp not null
+    payment_at timestamp
 );
 
-drop type if exists statusBarang, roleUsers, statusTransaksi, kategoriBarang cascade;
+create table if exists Addresses (
+    address_id uuid primary key default gen_random_uuid(),
+    user_id uuid references Users(user_id) on delete cascade,
+    address text not null,
+    postal_code varchar(10) not null,
+    city varchar(255) not null,
+    province varchar(255) not null,
+    created_at timestamp default now()
+);
+
+drop type if exists statusBarang, roleUsers, statusTransaksi, kategoriBarang, paymentOption cascade;
 drop table if exists Users, Toko, Barang, historyBid, barangToko, Transaksi cascade;
