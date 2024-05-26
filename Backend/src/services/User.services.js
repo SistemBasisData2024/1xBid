@@ -3,7 +3,7 @@ const { pool } = require('../config/db.config');
 exports.getUserProfile = async (user_id) => {
     try {
         const responseUser = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-        if(responseUser.rows.length === 0) throw new Error('User not found');
+        if (responseUser.rows.length === 0) throw new Error('User not found');
         const responseAddress = await pool.query('SELECT * FROM addresses WHERE user_id = $1', [user_id]);
         const address = responseAddress.rows;
         return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address } };
