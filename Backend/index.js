@@ -15,6 +15,12 @@ pool.connect().then(() => {
     console.log(err);
 });
 
+app.use(cors({
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+    origin: 'http://localhost:5173',
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
