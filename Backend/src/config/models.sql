@@ -95,7 +95,7 @@ create table if not exists Transaksi (
     payment_at timestamp
 );
 
-create table if exists Addresses (
+create table if not exists Addresses (
     address_id uuid primary key default gen_random_uuid(),
     user_id uuid references Users(user_id) on delete cascade,
     address text not null,
