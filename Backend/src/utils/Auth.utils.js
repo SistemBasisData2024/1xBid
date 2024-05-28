@@ -1,11 +1,9 @@
-const jwt = require('jsonwebtoken');
+const { pool } = require('../config/db.config');
 
-exports.authenticate = async (token) => {
+exports.keepDBAlive = async () => {
     try {
-        if (!token) throw new Error('Token is required');
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        return decoded;
-    } catch (err) {
-        throw err;
+        await pool.query('SELECT 1');
+    } catch (error) {
+        console.error(error);
     }
-}
+};

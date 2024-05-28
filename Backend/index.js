@@ -3,8 +3,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const authRoutes = require('./src/routes/Auth.routes');
 const tokoRoutes = require('./src/routes/Toko.routes');
-const barangRoutes = require('./src/routes/Barang.routes');
 const userRoutes = require('./src/routes/User.routes');
+const utils = require('./src/utils/Auth.utils');
 const { pool } = require('./src/config/db.config');
 
 dotenv.config();
@@ -26,8 +26,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/auth', authRoutes);
 app.use('/toko', tokoRoutes);
-app.use('/barang', barangRoutes);
 app.use('/user', userRoutes);
+
+// interval every 5 minutes
+setInterval(utils.keepDBAlive, 1000*60*5);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
