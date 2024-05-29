@@ -8,8 +8,7 @@ create type statusBarang as enum (
 
 create type roleUsers as enum (
     'Admin',
-    'User',
-    'Punished'
+    'User'
 );
 
 create type statusTransaksi as enum (
@@ -28,6 +27,10 @@ create type paymentOption as enum (
     'Saldo', 'Bank Transfer', 'e-Wallet', 'Debit/Credit Card', 'Crypto'
 );
 
+create type accountStatus as enum (
+    'Active', 'Suspended', 'Deleted'
+);
+
 create table if not exists Users (
     user_id uuid primary key default gen_random_uuid(),
     username varchar(255) not null unique,
@@ -41,7 +44,8 @@ create table if not exists Users (
     saldo int not null default 0,
     bid_violation int not null default 0,
     profile_picture text,
-    constraint check_role check (bid_violation <= 2 or role = 'Punished')
+    account_status accountStatus not null default 'Active',
+    constraint check_role check (bid_violation <= 2 or account_status = 'Suspended')
 );
 
 
@@ -50,7 +54,9 @@ create table if not exists Toko (
     owner_id uuid references Users(user_id) on delete cascade,
     nama_toko varchar(255) not null,
     deskripsi text not null,
-    created_at timestamp default now()
+    created_at timestamp default now(),
+    toko_picture text,
+    toko_status accountStatus not null default 'Active'
 );
 
 create table if not exists Barang (
@@ -105,5 +111,5 @@ create table if not exists Addresses (
     created_at timestamp default now()
 );
 
-drop type if exists statusBarang, roleUsers, statusTransaksi, kategoriBarang, paymentOption cascade;
-drop table if exists Users, Toko, Barang, historyBid, barangToko, Transaksi cascade;
+drop type if exists statusBarang, roleUsers, statusTransaksi, kategoriBarang, paymentOption, accountStatus cascade;
+drop table if exists Users, Toko, Barang, historyBid, barangToko, Transaksi, Addresses cascade;
