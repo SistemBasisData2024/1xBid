@@ -4,6 +4,7 @@ exports.getUserProfile = async (user_id) => {
     try {
         const responseUser = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
         if (responseUser.rows.length === 0) throw new Error('User not found');
+        delete responseUser.rows[0].password;
         const responseAddress = await pool.query('SELECT * FROM addresses WHERE user_id = $1', [user_id]);
         const address = responseAddress.rows;
         return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address } };
@@ -19,6 +20,10 @@ exports.updateUserProfile = async (user_id, body) => {
 
         const response = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
         if (response.rows.length === 0) throw new Error('User not found');
+
+        if (user.role && user.role === 'Admin') throw new Error('Forbidden');
+
+        if (user.account_status) delete user.account_status;
 
         const fields = [];
         const values = [];
@@ -41,8 +46,17 @@ exports.updateUserProfile = async (user_id, body) => {
 
 exports.deleteUserProfile = async (user_id) => {
     try {
-        const response = await pool.query('DELETE FROM users WHERE user_id = $1', [user_id]);
-        return { message: 'User profile deleted successfully', data: response.rows[0] };
+        if (!user_id) throw new Error('Missing required field');
+
+        const response = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
+        if (response.rows.length === 0) throw new Error('User not found');
+
+        const query = 'UPDATE users SET account_status = $1 WHERE user_id = $2 RETURNING *';
+        const updateResponse = await pool.query(query, ['deleted', user_id]);
+        if (updateResponse.rows.length === 0) throw new Error('Failed to delete user');
+
+
+        return { message: 'User profile deleted successfully', data: updateResponse.rows[0] };
     } catch (error) {
         return { message: error.message };
     }
