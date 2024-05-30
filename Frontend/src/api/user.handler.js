@@ -2,25 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
-exports.handleRegister = async () => {
-    try {
-        const response = await axios.post(process.env.BE_URL + '/auth/register', {})
-        return response.data;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-exports.handleLogin = async (username, email, password) => {
-    try {
-        const response = await axios.post(process.env.BE_URL + '/auth/login', { username, password, email });
-        return response.data;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-exports.handleGetUserProfile = async () => {
+exports.getUserHandler = async () => {
     try {
         const response = await axios.get(process.env.BE_URL + '/user/profile', { headers: { cookie: `token=${localStorage.getItem('token')}` } });
         return response.data;
@@ -29,7 +11,7 @@ exports.handleGetUserProfile = async () => {
     }
 }
 
-exports.handleUpdateUserProfile = async (body) => {
+exports.updateUserHandler = async (body) => {
     try {
         const response = await axios.put(process.env.BE_URL + '/user/profile', body, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
         return response.data;
@@ -38,7 +20,7 @@ exports.handleUpdateUserProfile = async (body) => {
     }
 }
 
-exports.handleDeleteUserProfile = async () => {
+exports.deleteUserHandler = async () => {
     try {
         const response = await axios.delete(process.env.BE_URL + '/user/profile', { headers: { cookie: `token=${localStorage.getItem('token')}` } });
         return response.data;
@@ -47,7 +29,7 @@ exports.handleDeleteUserProfile = async () => {
     }
 }
 
-exports.handleAddAddress = async (address, postal_code, city, province) => {
+exports.addAddressHandler = async (address, postal_code, city, province) => {
     try {
         const response = await axios.post(process.env.BE_URL + '/user/add-address', { address, postal_code, city, province }, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
         return response.data;
@@ -56,7 +38,7 @@ exports.handleAddAddress = async (address, postal_code, city, province) => {
     }
 }
 
-exports.handleEditAddress = async (address_id, address, postal_code, city, province) => {
+exports.editAddressHandler = async (address_id, address, postal_code, city, province) => {
     try {
         const response = await axios.put(process.env.BE_URL + '/user/edit-address', { address_id, address, postal_code, city, province }, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
         return response.data;
@@ -65,7 +47,7 @@ exports.handleEditAddress = async (address_id, address, postal_code, city, provi
     }
 }
 
-exports.handleTopUpSaldo = async (saldo) => {
+exports.topUpSaldoHandler = async (saldo) => {
     try {
         const response = await axios.post(process.env.BE_URL + '/user/top-up', { saldo }, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
         return response.data;
@@ -74,9 +56,9 @@ exports.handleTopUpSaldo = async (saldo) => {
     }
 }
 
-exports.handleOpenToko = async (nama_toko, deskripsi) => {
+exports.openTokoHandler = async (toko_name, toko_description) => {
     try {
-        const response = await axios.post(process.env.BE_URL + '/user/open-toko', { nama_toko, deskripsi }, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
+        const response = await axios.post(process.env.BE_URL + '/user/open-toko', { toko_name, toko_description }, { headers: { cookie: `token=${localStorage.getItem('token')}` }});
         return response.data;
     } catch (error) {
         console.error(error);

@@ -24,6 +24,7 @@ exports.login = async (body) => {
         const response = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $2', [username, email]);
         if (response.rows.length === 0) throw new Error('User not found');
         const user = response.rows[0];
+        if(user.account_status === 'Deleted') throw new Error('User not found');
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) throw new Error('Invalid credentials');
 

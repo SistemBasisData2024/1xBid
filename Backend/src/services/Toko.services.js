@@ -4,10 +4,12 @@ exports.getTokoById = async (params) => {
     try {
         const { toko_id } = params;
         if(!toko_id) throw new Error('Toko id is required');
-        const response = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [toko_id]);
-        if(response.rows.length === 0) throw new Error('Toko not found');
+        const responseToko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [toko_id]);
+        if(responseToko.rows.length === 0) throw new Error('Toko not found');
 
-        return { message: 'Toko fetched successfully', data: response.rows[0] };
+        const responseBarang = await pool.query('SELECT * FROM barang WHERE barang_id IN (SELECT barang_id FROM barangToko WHERE toko_id = $1)', [toko_id]);
+
+        return { message: 'Toko fetched successfully', data: { toko: responseToko.rows[0], barang: responseBarang.rows } };
     } catch (error) {
         return { message: error.message };
     }
@@ -34,7 +36,7 @@ exports.deleteToko = async (params) => {
         const { toko_id } = params;
         if(!toko_id) throw new Error('Toko id is required');
 
-        const response = await pool.query('DELETE FROM toko WHERE toko_id = $1', [toko_id]);
+        const response = await pool.query('UPDATE toko SET toko_status = $1 WHERE toko_id = $2 RETURNING *', ['Deleted', toko_id]);
         if(response.rowCount === 0) throw new Error('Failed to delete toko');
 
         return { message: 'Toko deleted successfully', data: response.rows[0] };
@@ -75,6 +77,10 @@ exports.editBarang = async (params, body) => {
         if (isBarangInDB.rows.length === 0) throw new Error('Barang not found');
 
         if (isBarangInDB.rows[0].start_time < new Date()) throw new Error('Barang has been started, cannot update Barang');
+
+        if(barang.toko_id) delete barang.toko_id;
+        if(barang.barang_id) delete barang.barang_id;
+        if(barang.status) delete barang.status;
 
         const fields = [];
         const values = [];

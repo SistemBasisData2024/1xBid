@@ -12,8 +12,9 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const response = await authServices.login(req.body);
+        if(response.message === 'User not found') throw new Error('User not found');
         res.cookie('token', response.data.token, { maxAge: 3600000, httpOnly: true });
-        res.status(200).json(response)
+        res.status(200).json(response);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
