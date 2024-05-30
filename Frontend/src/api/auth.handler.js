@@ -16,8 +16,8 @@ export const registerHandler = async (username, email, fullname, password, date_
 
 export const loginHandler = async (username, email, password) => {
     try {
-        if(email && !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw new Error('Invalid email');
-        if(username && username.match(/[^a-zA-Z0-9]/)) throw new Error('Invalid username');
+        if (email && !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw new Error('Invalid email');
+        if (username && username.match(/[^a-zA-Z0-9]/)) throw new Error('Invalid username');
         const response = await axios.post(BE_URL + '/auth/login', { username, email, password });
         return response.data;
     } catch (error) {
