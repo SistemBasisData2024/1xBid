@@ -56,9 +56,11 @@ exports.topUpSaldoHandler = async (saldo) => {
     }
 }
 
-exports.openTokoHandler = async (toko_name, toko_description) => {
+exports.openTokoHandler = async (nama_toko, toko_description) => {
     try {
-        const response = await axios.post(process.env.BE_URL + '/user/open-toko', { toko_name, toko_description }, { headers: { cookie: `token=${localStorage.getItem('token')}` }});
+        if(!nama_toko || !toko_description) throw new Error('All fields must be filled');
+        if(nama_toko.match(/[^a-zA-Z0-9 ]/)) throw new Error('Nama toko cannot contain special characters');
+        const response = await axios.post(process.env.BE_URL + '/user/open-toko', { nama_toko, toko_description }, { headers: { cookie: `token=${localStorage.getItem('token')}` }});
         return response.data;
     } catch (error) {
         console.error(error);
