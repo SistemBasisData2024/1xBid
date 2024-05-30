@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const UserInfo = ({ user, onEdit }) => {
   return (
@@ -9,12 +10,9 @@ const UserInfo = ({ user, onEdit }) => {
       <p>Full Name: {user.fullname}</p>
       <p>Date of Birth: {user.dob}</p>
       <p>Phone: {user.phone}</p>
-      <button
-        className="mt-2 bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700"
-        onClick={onEdit}
-      >
+      <Button className="mt-2" color="primary" onClick={onEdit}>
         Edit Profile
-      </button>
+      </Button>
     </div>
   );
 };
