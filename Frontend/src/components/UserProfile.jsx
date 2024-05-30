@@ -102,6 +102,7 @@ const UserProfile = () => {
 
   return (
     <div className="container mx-auto p-4 bg-gray-50 min-h-screen">
+      <div className="mt-32"></div>
       <ToastContainer />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="p-6 shadow-lg rounded-lg bg-white">
@@ -157,6 +158,7 @@ const UserProfile = () => {
               onChange={(e) =>
                 setEditData({ ...editData, username: e.target.value })
               }
+              className="mb-2"
             />
             <Input
               label="Email"
@@ -165,6 +167,7 @@ const UserProfile = () => {
               onChange={(e) =>
                 setEditData({ ...editData, email: e.target.value })
               }
+              className="mb-2"
             />
             <Input
               label="Full Name"
@@ -173,6 +176,7 @@ const UserProfile = () => {
               onChange={(e) =>
                 setEditData({ ...editData, fullname: e.target.value })
               }
+              className="mb-2"
             />
             <Input
               label="Date of Birth"
@@ -181,6 +185,7 @@ const UserProfile = () => {
               onChange={(e) =>
                 setEditData({ ...editData, dob: e.target.value })
               }
+              className="mb-2"
             />
             <Input
               label="Phone"
@@ -189,6 +194,7 @@ const UserProfile = () => {
               onChange={(e) =>
                 setEditData({ ...editData, phone: e.target.value })
               }
+              className="mb-2"
             />
             <div className="flex justify-end mt-4">
               <Button onClick={handleEditProfile} color="primary">
@@ -214,31 +220,39 @@ const UserProfile = () => {
             </h2>
             <Input
               label="Address"
+              placeholder="Fullname"
               value={editData.address || ""}
               onChange={(e) =>
                 setEditData({ ...editData, address: e.target.value })
               }
+              className="mb-2"
             />
             <Input
               label="Postal Code"
+              placeholder="Postal Code"
               value={editData.postal_code || ""}
               onChange={(e) =>
                 setEditData({ ...editData, postal_code: e.target.value })
               }
+              className="mb-2"
             />
             <Input
               label="City"
+              placeholder="City"
               value={editData.city || ""}
               onChange={(e) =>
                 setEditData({ ...editData, city: e.target.value })
               }
+              className="mb-2"
             />
             <Input
               label="Province"
+              placeholder="Province"
               value={editData.province || ""}
               onChange={(e) =>
                 setEditData({ ...editData, province: e.target.value })
               }
+              className="mb-2"
             />
             <div className="flex justify-end mt-4">
               <Button
@@ -264,89 +278,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
-// const UserProfile = () => {
-//   const [profile, setProfile] = useState("");
-
-//   /*useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const data = await axios.get("http://localhost:5000/user/profile");
-//         setProfile(data.data.user);
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);*/
-
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//       const data = await getUserHandler();
-//       if (data) setUser(data);
-//     };
-//     fetchUserData();
-//   }, []);
-
-//   const [user, setUser] = useState({
-//     username: setProfile.username,
-//     email: "john@example.com",
-//     fullname: "John Doe",
-//     dob: "1990-01-01",
-//     phone: "123456789",
-//     address: "123 Main St, Anytown, USA",
-//     balance: 100.0,
-//   });
-
-//   const handleEditProfile = () => {
-//     toast.info("Edit Profile Clicked");
-//     // Handle edit profile logic here
-//   };
-
-//   const handleEditAddress = () => {
-//     toast.info("Edit Address Clicked");
-//     // Handle edit address logic here
-//   };
-
-//   const handleAddAddress = () => {
-//     toast.info("Add Address Clicked");
-//     // Handle add address logic here
-//     // For now, let's assume it's implemented in addAddressHandler
-//     addAddressHandler();
-//   };
-
-//   const handleTopUp = (amount) => {
-//     setUser((prevState) => ({
-//       ...prevState,
-//       balance: prevState.balance + parseFloat(amount),
-//     }));
-//   };
-
-//   return (
-//     <div className="container mx-auto p-4 bg-gray-50 min-h-screen">
-//       <ToastContainer />
-//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//         <Card className="p-6 shadow-lg rounded-lg bg-white">
-//           <h1 className="text-2xl font-bold mb-4 text-gray-700">
-//             User Profile
-//           </h1>
-//           <UserInfo user={user} onEdit={handleEditProfile} />
-//         </Card>
-//         <Card className="p-6 shadow-lg rounded-lg bg-white">
-//           <Address address={user.address} onEdit={handleEditAddress} />
-//         </Card>
-//         <Card className="p-6 shadow-lg rounded-lg bg-white">
-//           <Balance balance={user.balance} onTopUp={handleTopUp} />
-//         </Card>
-//       </div>
-//       <div className="flex justify-center mt-6">
-//         <Button className="mt-4" color="primary">
-//           Open Store
-//         </Button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default UserProfile;
