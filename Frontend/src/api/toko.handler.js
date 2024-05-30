@@ -2,7 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
-exports.getTokoHandler = async (toko_id) => {
+export const getTokoHandler = async (toko_id) => {
     try {
         const response = await axios.get(process.env.BE_URL + '/toko/' + toko_id);
         return response.data;
@@ -11,7 +11,7 @@ exports.getTokoHandler = async (toko_id) => {
     }
 }
 
-exports.updateTokoHandler = async (toko_id, body) => {
+export const updateTokoHandler = async (toko_id, body) => {
     try {
         const response = await axios.put(process.env.BE_URL + '/toko/' + toko_id, body);
         return response.data;
@@ -20,7 +20,7 @@ exports.updateTokoHandler = async (toko_id, body) => {
     }
 }
 
-exports.deleteTokoHandler = async (toko_id) => {
+export const deleteTokoHandler = async (toko_id) => {
     try {
         const response = await axios.delete(process.env.BE_URL + '/toko/' + toko_id);
         return response.data;
@@ -29,7 +29,7 @@ exports.deleteTokoHandler = async (toko_id) => {
     }
 }
 
-exports.addBarangHandler = async (toko_id, body) => {
+export const addBarangHandler = async (toko_id, body) => {
     try {
         const response = await axios.post(process.env.BE_URL + '/toko/' + toko_id + '/add-barang', body);
         return response.data;
@@ -38,7 +38,7 @@ exports.addBarangHandler = async (toko_id, body) => {
     }
 }
 
-exports.editBarangHandler = async (toko_id, barang_id, body) => {
+export const editBarangHandler = async (toko_id, barang_id, body) => {
     try {
         const response = await axios.put(process.env.BE_URL + '/toko/' + toko_id + '/' + barang_id, body);
         return response.data;
@@ -47,7 +47,7 @@ exports.editBarangHandler = async (toko_id, barang_id, body) => {
     }
 }
 
-exports.deleteBarangHandler = async (toko_id, barang_id) => {
+export const deleteBarangHandler = async (toko_id, barang_id) => {
     try {
         const response = await axios.delete(process.env.BE_URL + '/toko/' + toko_id + '/' + barang_id);
         return response.data;

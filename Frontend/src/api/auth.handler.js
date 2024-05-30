@@ -2,7 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
-exports.registerHandler = async (username, email, fullname, password, date_of_birth, phone_number) => {
+export const registerHandler = async (username, email, fullname, password, date_of_birth, phone_number) => {
     try {
         if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw new Error('Invalid email');
         if (username.match(/[^a-zA-Z0-9]/)) throw new Error('Invalid username');
@@ -14,7 +14,7 @@ exports.registerHandler = async (username, email, fullname, password, date_of_bi
     }
 };
 
-exports.loginHandler = async (username, email, password) => {
+export const loginHandler = async (username, email, password) => {
     try {
         if(email && !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) throw new Error('Invalid email');
         if(username && username.match(/[^a-zA-Z0-9]/)) throw new Error('Invalid username');
