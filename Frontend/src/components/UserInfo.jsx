@@ -10,7 +10,7 @@ const UserInfo = ({ user, onEdit }) => {
       <p>Full Name: {user.fullname}</p>
       <p>Date of Birth: {user.dob}</p>
       <p>Phone: {user.phone}</p>
-      <Button className="mt-2" color="primary" onClick={onEdit}>
+      <Button onClick={onEdit} className="mt-4" color="primary">
         Edit Profile
       </Button>
     </div>
