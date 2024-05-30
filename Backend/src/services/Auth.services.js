@@ -9,6 +9,7 @@ exports.register = async (body) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const response = await pool.query('INSERT INTO users (username, email, fullname, password, date_of_birth, phone_number) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [username, email, fullname, hashedPassword, date_of_birth, phone_number]);
+        delete response.rows[0].password;
         return { message: 'User registered successfully', user: response.rows[0] }
     } catch (error) {
         return { message: error.message };
