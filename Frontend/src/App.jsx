@@ -7,22 +7,6 @@ import { useEffect } from "react";
 import axios from "axios";
 
 const App = () => {
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const username = "ten";
-        const password = "ten123";
-        const response = await axios.post("http://localhost:5000/auth/login", {
-          username,
-          password,
-        });
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  });
 
   return (
     <Router>
