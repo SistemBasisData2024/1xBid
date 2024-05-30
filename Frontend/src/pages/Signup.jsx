@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { registerHandler } from "@/api/auth.handler";
+import { toast, ToastContainer } from "react-toastify";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -40,16 +40,14 @@ const Register = () => {
         dateOfBirth,
         phoneNumber
       );
-      if (response.data.message === "Registration successful") {
-        setSuccess("Registration successful. Redirecting to login...");
+      if (response.message === "User registered successfully") {
+        toast.success("Registration successful. Redirecting to login...");
         setTimeout(() => {
           navigate("/login");
         }, 2000);
-      } else {
-        setError(response.data.message);
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 
@@ -167,6 +165,7 @@ const Register = () => {
           </form>
         </CardContent>
       </Card>
+      <ToastContainer className="mt-4" />
     </section>
   );
 };

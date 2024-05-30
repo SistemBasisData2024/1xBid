@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import loginImage from "/src/assets/login_image.jpg";
+import { loginHandler } from "@/api/auth.handler";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -16,19 +18,18 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/auth/login", {
-        username,
-        email,
-        password,
-      });
+      const response = await loginHandler(username, email, password);
       if (response.message === "Login successfully") {
         localStorage.setItem("token", response.data.token);
-        navigate("/");
+        toast.success("Login successful");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
       } else {
-        setError(response.message);
+        toast.error("Invalid credentials");
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
 
@@ -120,6 +121,7 @@ const Login = () => {
           height: "100vh",
         }}
       ></div>
+      <ToastContainer className="mt-4" />
     </div>
   );
 };
