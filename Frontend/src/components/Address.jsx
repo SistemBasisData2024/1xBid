@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 const Address = ({ address, onEdit }) => {
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-2">Address</h2>
-      <p>{address}</p>
-      <Button className="mt-2" color="primary" onClick={onEdit}>
+      <p>
+        <strong>Address:</strong> {address}
+      </p>
+      <Button onClick={onEdit} className="mt-4" color="primary">
         Edit Address
       </Button>
     </div>
