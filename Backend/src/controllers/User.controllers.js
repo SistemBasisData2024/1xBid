@@ -21,9 +21,10 @@ exports.updateUserProfile = async (req, res) => {
 exports.deleteUserProfile = async (req, res) => {
     try {
         const response = await userServices.deleteUserProfile(req.user_id);
-        return res.status(200).json(response);
+        res.clearCookie('token');
+        res.status(200).json(response);
     } catch (error) {
-        return res.status(500).json(error);
+        res.status(500).json(error);
     }
 }
 

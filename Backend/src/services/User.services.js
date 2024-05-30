@@ -18,9 +18,6 @@ exports.updateUserProfile = async (user_id, body) => {
         const { ...user } = body;
         if (!user_id) throw new Error('Missing required field');
 
-        const response = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-        if (response.rows.length === 0) throw new Error('User not found');
-
         if (user.role && user.role === 'Admin') throw new Error('Forbidden');
 
         if (user.account_status) delete user.account_status;
@@ -48,11 +45,8 @@ exports.deleteUserProfile = async (user_id) => {
     try {
         if (!user_id) throw new Error('Missing required field');
 
-        const response = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-        if (response.rows.length === 0) throw new Error('User not found');
-
         const query = 'UPDATE users SET account_status = $1 WHERE user_id = $2 RETURNING *';
-        const updateResponse = await pool.query(query, ['deleted', user_id]);
+        const updateResponse = await pool.query(query, ['Deleted', user_id]);
         if (updateResponse.rows.length === 0) throw new Error('Failed to delete user');
 
 
@@ -100,9 +94,6 @@ exports.topUpSaldo = async (user_id, body) => {
         if (!user_id) throw new Error('Missing required field');
         if (!saldo) throw new Error('Missing required field');
 
-        const response = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-        if (response.rows.length === 0) throw new Error('User not found');
-
         const query = 'UPDATE users SET saldo = saldo + $1 WHERE user_id = $2 RETURNING *';
         const updateResponse = await pool.query(query, [saldo, user_id]);
         if (updateResponse.rows.length === 0) throw new Error('Failed to top up saldo');
@@ -119,10 +110,8 @@ exports.openToko = async (user_id, body) => {
         if (!user_id) throw new Error('Missing required field');
         if (!nama_toko || !deskripsi) throw new Error('Missing required field');
 
-        const response = await pool.query('SELECT * FROM toko WHERE user_id = $1', [user_id]);
-        if (response.rows.length > 0) throw new Error('User already has a toko');
-
         const tokoResponse = await pool.query('INSERT INTO toko (nama_toko, deskripsi, owner_id) VALUES ($1, $2, $3) RETURNING *', [nama_toko, deskripsi, user_id]);
+        if(tokoResponse.rows.length === 0) throw new Error('Failed to create toko');
         return { message: 'Toko created successfully', data: tokoResponse.rows[0] };
     } catch (error) {
         return { message: error.message };

@@ -11,7 +11,8 @@ exports.isTokoOwner = async (req, res, next) => {
         if(!toko_id) throw new Error('Toko id is required');
 
         const response = await pool.query('SELECT * FROM toko WHERE toko_id = $1 AND owner_id = $2', [toko_id, user_id]);
-        if(response.rows.length === 0) throw new Error('Unauthorized');
+        if(response.rows.length === 0) throw new Error('You are not the owner of this toko');
+        console.log(response.rows);
         next();
     } catch (error) {
         return res.status(500).json({ message: error.message });
