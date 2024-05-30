@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Profile from "./pages/Profile";
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import { useEffect } from "react";
-import axios from "axios";
 
 const App = () => {
 
