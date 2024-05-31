@@ -1,46 +1,50 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
-dotenv.config();
+
+const BE_URL = import.meta.env.VITE_BE_URL;
 
 export const getUserHandler = async () => {
     try {
-        const response = await axios.get(process.env.BE_URL + '/user/profile', { headers: { cookie: `token=${localStorage.getItem('token')}` } });
-        return response.data;
+        const response = await axios.get(BE_URL + '/user/profile', { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        if(response.status !== 200) throw new Error('Failed to fetch user data');
+        if(response.status === 401) throw new Error('Unauthorized');
+        return { message: response.data.message, user: response.data.data.user, address: response.data.data.address };
     } catch (error) {
-        console.error(error);
+        return false;
     }
 }
 
 export const updateUserHandler = async (body) => {
     try {
-        const response = await axios.put(process.env.BE_URL + '/user/profile', body, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
+        const response = await axios.put(BE_URL + '/user/profile', body, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        if(response.status !== 200) throw new Error('Failed to update user data');
         return response.data;
     } catch (error) {
-        console.error(error);
+        return { message: error.message };
     }
 }
 
 export const deleteUserHandler = async () => {
     try {
-        const response = await axios.delete(process.env.BE_URL + '/user/profile', { headers: { cookie: `token=${localStorage.getItem('token')}` } });
+        const response = await axios.delete(BE_URL + '/user/profile', { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         return response.data;
     } catch (error) {
-        console.error(error);
+        return false;
     }
 }
 
 export const addAddressHandler = async (address, postal_code, city, province) => {
     try {
-        const response = await axios.post(process.env.BE_URL + '/user/add-address', { address, postal_code, city, province }, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
+        const response = await axios.post(BE_URL + '/user/add-address', { address, postal_code, city, province }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        if(response.status !== 200) throw new Error('Failed to add address');
         return response.data;
     } catch (error) {
-        console.error(error);
+        return false;
     }
 }
 
 export const editAddressHandler = async (address_id, address, postal_code, city, province) => {
     try {
-        const response = await axios.put(process.env.BE_URL + '/user/edit-address', { address_id, address, postal_code, city, province }, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
+        const response = await axios.put(BE_URL + '/user/edit-address', { address_id, address, postal_code, city, province }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         return response.data;
     } catch (error) {
         console.error(error);
@@ -49,7 +53,7 @@ export const editAddressHandler = async (address_id, address, postal_code, city,
 
 export const topUpSaldoHandler = async (saldo) => {
     try {
-        const response = await axios.post(process.env.BE_URL + '/user/top-up', { saldo }, { headers: { cookie: `token=${localStorage.getItem('token')}` } });
+        const response = await axios.post(BE_URL + '/user/top-up', { saldo }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         return response.data;
     } catch (error) {
         console.error(error);
@@ -58,9 +62,9 @@ export const topUpSaldoHandler = async (saldo) => {
 
 export const openTokoHandler = async (nama_toko, toko_description) => {
     try {
-        if(!nama_toko || !toko_description) throw new Error('All fields must be filled');
-        if(nama_toko.match(/[^a-zA-Z0-9 ]/)) throw new Error('Nama toko cannot contain special characters');
-        const response = await axios.post(process.env.BE_URL + '/user/open-toko', { nama_toko, toko_description }, { headers: { cookie: `token=${localStorage.getItem('token')}` }});
+        if (!nama_toko || !toko_description) throw new Error('All fields must be filled');
+        if (nama_toko.match(/[^a-zA-Z0-9 ]/)) throw new Error('Nama toko cannot contain special characters');
+        const response = await axios.post(BE_URL + '/user/open-toko', { nama_toko, toko_description }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         return response.data;
     } catch (error) {
         console.error(error);

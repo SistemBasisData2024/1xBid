@@ -91,7 +91,7 @@ exports.editAddress = async (user_id, body) => {
 exports.topUpSaldo = async (user_id, body) => {
     try {
         const { saldo } = body;
-        if (!user_id) throw new Error('Missing required field');
+        if (!user_id) throw new Error('Missing user_id field');
         if (!saldo) throw new Error('Missing required field');
 
         const query = 'UPDATE users SET saldo = saldo + $1 WHERE user_id = $2 RETURNING *';

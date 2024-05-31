@@ -2,71 +2,286 @@ import React, { useEffect, useState } from "react";
 import UserInfo from "./UserInfo";
 import Address from "./Address";
 import Balance from "./Balance";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import {
+  getUserHandler,
+  updateUserHandler,
+  addAddressHandler,
+  editAddressHandler,
+  topUpSaldoHandler,
+  openTokoHandler,
+} from "@/api/user.handler";
 
 const UserProfile = () => {
-  const [profile, setProfile] = useState("");
+  const [user, setUser] = useState({});
+  const [address, setAddress] = useState([]);
 
-  /*useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await axios.get("http://localhost:5000/user/profile");
-        setProfile(data.data.user);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);*/
-
-  const [user, setUser] = useState({
-    username: setProfile.username,
-    email: "john@example.com",
-    fullname: "John Doe",
-    dob: "1990-01-01",
-    phone: "123456789",
-    address: "123 Main St, Anytown, USA",
-    balance: 100.0,
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
+  const [isAddressModalOpen, setAddressModalOpen] = useState(false);
+  const [editData, setEditData] = useState({
+    username: "",
+    email: "",
+    fullname: "",
+    date_of_birth: "",
+    phone_number: ""
   });
 
-  const handleEditProfile = () => {
-    toast.info("Edit Profile Clicked");
-    // Handle edit profile logic here
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await getUserHandler();
+      if (response) {
+        response.user.date_of_birth = new Date(
+          response.user.date_of_birth
+        ).toLocaleDateString();
+        setUser(response.user);
+        setAddress(response.address);
+      } else {
+        toast.error("Failed to fetch user data");
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleEditProfile = async () => {
+    const response = await updateUserHandler(editData);
+    if (response) {
+      setUser(response);
+      toast.success("Profile updated successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } else {
+      toast.error("Failed to update profile");
+    }
+  }
+
+  const handleEditAddress = async (newAddress) => {
+    const response = await editAddressHandler(newAddress);
+    if (response) {
+      setUser((prevState) => ({ ...prevState, address: response.address }));
+      toast.success("Address updated successfully");
+    } else {
+      toast.error("Failed to update address");
+    }
   };
 
-  const handleEditAddress = () => {
-    toast.info("Edit Address Clicked");
-    // Handle edit address logic here
+  const handleTopUp = async (amount) => {
+    const response = await topUpSaldoHandler(amount);
+    if (response) {
+      setUser((prevState) => ({
+        ...prevState,
+        balance: prevState.balance + parseFloat(amount),
+      }));
+      toast.success("Balance topped up successfully");
+    } else {
+      toast.error("Failed to top up balance");
+    }
   };
 
-  const handleTopUp = (amount) => {
-    setUser((prevState) => ({
-      ...prevState,
-      balance: prevState.balance + parseFloat(amount),
-    }));
+  const handleOpenStore = async () => {
+    const storeData = { nama_toko: "My Store", toko_description: "Best store" };
+    const response = await openTokoHandler(storeData);
+    if (response) {
+      toast.success("Store opened successfully");
+    } else {
+      toast.error("Failed to open store");
+    }
+  };
+
+  const handleAddAddress = async () => {
+    const newAddress = prompt("Enter new address:");
+    if (newAddress) {
+      const response = await addAddressHandler(newAddress);
+      if (response) {
+        setUser((prevState) => ({ ...prevState, address: response.address }));
+        toast.success("Address added successfully");
+      } else {
+        toast.error("Failed to add address");
+      }
+    }
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <ToastContainer />
-      <div className="container mx-auto p-4">
-        <div className="bg-white shadow-md rounded-lg p-6">
-          <h1 className="text-2xl font-bold mb-4">User Profile</h1>
-          <UserInfo user={user} onEdit={handleEditProfile} />
-        </div>
-        <div className="bg-white shadow-md rounded-lg p-6 mt-4">
-          <Address address={user.address} onEdit={handleEditAddress} />
-        </div>
-        <div className="bg-white shadow-md rounded-lg p-6 mt-4">
+    <div className="container mx-auto p-4 bg-gray-50 min-h-screen">
+      <div className="mt-32"></div>
+      <ToastContainer autoClose={3000}/>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Card className="p-6 shadow-lg rounded-lg bg-white">
+          <h1 className="text-2xl font-bold mb-4 text-gray-700">
+            User Profile
+          </h1>
+          <UserInfo
+            user={user}
+            onEdit={() => {
+              setEditData(user);
+              setProfileModalOpen(true);
+            }}
+          />
+        </Card>
+        <Card className="p-6 shadow-lg rounded-lg bg-white">
+          {address.map((addressItem, index) => (
+            <Address
+              key={index}
+              address={addressItem}
+              onEdit={() => {
+                setEditData(addressItem);
+                setAddressModalOpen(true);
+              }}
+            />
+          ))}
+          <Button
+            onClick={() => {
+              setEditData({});
+              setAddressModalOpen(true);
+            }}
+            className="mt-4"
+            color="primary"
+          >
+            Add Address
+          </Button>
+        </Card>
+        <Card className="p-6 shadow-lg rounded-lg bg-white">
           <Balance balance={user.balance} onTopUp={handleTopUp} />
-        </div>
-        <button className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
-          Open Store
-        </button>
+        </Card>
       </div>
+      <div className="flex justify-center mt-6">
+        <Button onClick={handleOpenStore} className="mt-4" color="primary">
+          Open Store
+        </Button>
+      </div>
+
+      {/* Profile Modal */}
+      {isProfileModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
+            <Input
+              label="Username"
+              placeholder="Username"
+              value={editData.username || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, username: e.target.value })
+              }
+              className="mb-2"
+            />
+            <Input
+              label="Email"
+              placeholder="Email"
+              value={editData.email || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, email: e.target.value })
+              }
+              className="mb-2"
+            />
+            <Input
+              label="Full Name"
+              placeholder="Fullname"
+              value={editData.fullname || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, fullname: e.target.value })
+              }
+              className="mb-2"
+            />
+            <Input
+              label="Date of Birth"
+              placeholder="Date of Birth"
+              value={editData.date_of_birth || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, date_of_birth: e.target.value })
+              }
+              className="mb-2"
+            />
+            <Input
+              label="Phone"
+              placeholder="Phone number"
+              value={editData.phone_number || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, phone_number: e.target.value })
+              }
+              className="mb-2"
+            />
+            <div className="flex justify-end mt-4">
+              <Button onClick={handleEditProfile} color="primary">
+                Save
+              </Button>
+              <Button
+                onClick={() => setProfileModalOpen(false)}
+                className="ml-2"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Address Modal */}
+      {isAddressModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">
+              {editData.address ? "Edit Address" : "Add Address"}
+            </h2>
+            <Input
+              label="Address"
+              placeholder="Fullname"
+              value={editData.address || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, address: e.target.value })
+              }
+              className="mb-2"
+            />
+            <Input
+              label="Postal Code"
+              placeholder="Postal Code"
+              value={editData.postal_code || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, postal_code: e.target.value })
+              }
+              className="mb-2"
+            />
+            <Input
+              label="City"
+              placeholder="City"
+              value={editData.city || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, city: e.target.value })
+              }
+              className="mb-2"
+            />
+            <Input
+              label="Province"
+              placeholder="Province"
+              value={editData.province || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, province: e.target.value })
+              }
+              className="mb-2"
+            />
+            <div className="flex justify-end mt-4">
+              <Button
+                onClick={
+                  editData.address ? handleEditAddress : handleAddAddress
+                }
+                color="primary"
+              >
+                Save
+              </Button>
+              <Button
+                onClick={() => setAddressModalOpen(false)}
+                className="ml-2"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

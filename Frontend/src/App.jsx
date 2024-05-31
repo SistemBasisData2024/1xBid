@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Profile from "./pages/Profile";
 import Signup from './pages/Signup';
@@ -20,6 +21,14 @@ const App = () => {
         <Route path="/tokodetails" element={<TokoDetails />} /> 
       </Routes>
     </Router>
+=======
+
+const App = () => {
+  return (
+    <div>
+      <h1>React App</h1>
+    </div>
+>>>>>>> 8936e655b7fec74710da4b4ebf9f6363cae4a20d
   );
 };
 
