@@ -18,41 +18,47 @@ import {
 } from "@/api/user.handler";
 
 const UserProfile = () => {
-  const [user, setUser] = useState({
-    username: "",
-    email: "",
-    fullname: "",
-    dob: "",
-    phone: "",
-    address: "",
-    balance: 0.0,
-  });
+  const [user, setUser] = useState({});
+  const [address, setAddress] = useState([]);
 
   const [isProfileModalOpen, setProfileModalOpen] = useState(false);
   const [isAddressModalOpen, setAddressModalOpen] = useState(false);
-  const [editData, setEditData] = useState({});
+  const [editData, setEditData] = useState({
+    username: "",
+    email: "",
+    fullname: "",
+    date_of_birth: "",
+    phone_number: ""
+  });
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const data = await getUserHandler();
-      if (data) {
-        setUser(data);
+    const fetchUser = async () => {
+      const response = await getUserHandler();
+      if (response) {
+        response.user.date_of_birth = new Date(
+          response.user.date_of_birth
+        ).toLocaleDateString();
+        setUser(response.user);
+        setAddress(response.address);
       } else {
         toast.error("Failed to fetch user data");
       }
     };
-    fetchUserData();
+    fetchUser();
   }, []);
 
-  const handleEditProfile = async (updatedUser) => {
-    const response = await updateUserHandler(updatedUser);
+  const handleEditProfile = async () => {
+    const response = await updateUserHandler(editData);
     if (response) {
       setUser(response);
       toast.success("Profile updated successfully");
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     } else {
       toast.error("Failed to update profile");
     }
-  };
+  }
 
   const handleEditAddress = async (newAddress) => {
     const response = await editAddressHandler(newAddress);
@@ -103,7 +109,7 @@ const UserProfile = () => {
   return (
     <div className="container mx-auto p-4 bg-gray-50 min-h-screen">
       <div className="mt-32"></div>
-      <ToastContainer />
+      <ToastContainer autoClose={3000}/>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="p-6 shadow-lg rounded-lg bg-white">
           <h1 className="text-2xl font-bold mb-4 text-gray-700">
@@ -118,13 +124,16 @@ const UserProfile = () => {
           />
         </Card>
         <Card className="p-6 shadow-lg rounded-lg bg-white">
-          <Address
-            address={user.address}
-            onEdit={() => {
-              setEditData({ address: user.address });
-              setAddressModalOpen(true);
-            }}
-          />
+          {address.map((addressItem, index) => (
+            <Address
+              key={index}
+              address={addressItem}
+              onEdit={() => {
+                setEditData(addressItem);
+                setAddressModalOpen(true);
+              }}
+            />
+          ))}
           <Button
             onClick={() => {
               setEditData({});
@@ -181,18 +190,18 @@ const UserProfile = () => {
             <Input
               label="Date of Birth"
               placeholder="Date of Birth"
-              value={editData.dob || ""}
+              value={editData.date_of_birth || ""}
               onChange={(e) =>
-                setEditData({ ...editData, dob: e.target.value })
+                setEditData({ ...editData, date_of_birth: e.target.value })
               }
               className="mb-2"
             />
             <Input
               label="Phone"
               placeholder="Phone number"
-              value={editData.phone || ""}
+              value={editData.phone_number || ""}
               onChange={(e) =>
-                setEditData({ ...editData, phone: e.target.value })
+                setEditData({ ...editData, phone_number: e.target.value })
               }
               className="mb-2"
             />

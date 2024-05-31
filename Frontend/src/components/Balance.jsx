@@ -13,7 +13,7 @@ const Balance = ({ balance, onTopUp }) => {
   return (
     <div>
       <h2 className="text-xl font-semibold mb-2">Balance</h2>
-      <p>Current Balance: ${balance.toFixed(2)}</p>
+      {/* <p>Current Balance: ${balance.toFixed(2)}</p> */}
       <Input
         type="number"
         value={amount}
