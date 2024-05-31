@@ -7,7 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Signup";
 import Profile from "./pages/Profile";
 import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/test";
+import ProfilePage from "./pages/ProfilePage";
 import { ToastContainer } from "react-toastify";
 import Logout from "./pages/logout";
 import NavBar from "./components/navbar";

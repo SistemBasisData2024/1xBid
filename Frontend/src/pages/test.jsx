@@ -40,7 +40,6 @@ const ProfilePage = () => {
 
   return (
     <div className="p-4">
-      <Navbar />
       <div className="flex mt-16 bg-white">
         <img
           src="profile.jpg"
