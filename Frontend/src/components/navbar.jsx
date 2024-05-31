@@ -1,21 +1,104 @@
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+const NavBar = () => {
+  const [isLogged, setIsLogged] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLogged(true);
+    }
+  });
+
   return (
-    <nav className="fixed top-0 w-full bg-blue-500 p-4 flex items-center">
-      <div className="text-white font-bold mr-auto">1xBid</div>
-      <div className="w-full max-w-md mx-auto">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full px-4 py-2 rounded-md"
-        />
-      </div>
-      <div className="ml-auto flex space-x-4">
-        <Link to="/toko" className="text-white hover:text-gray-200 transition-colors duration-200">Toko</Link>
-        <Link to="/login" className="text-white hover:text-gray-200 transition-colors duration-200">Login</Link>
-        <Link to="/user-profile" className="text-white hover:text-gray-200 transition-colors duration-200">User Profile</Link>
+    <nav className="sticky top-0 z-10 block w-full max-w-full px-4 py-2 text-black bg-white border rounded-none shadow-md h-max border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+      <div className="flex items-center justify-between text-blue-gray-900">
+        <a
+          href="/"
+          className="mr-4 block cursor-pointer py-1.5 font-sans text-base font-medium leading-relaxed text-inherit antialiased"
+        >
+          1xBid
+        </a>
+        <div className="flex items-center gap-4">
+          <div className="hidden mr-4 lg:block">
+            <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                <a href="#" className="flex items-center">
+                  Pages
+                </a>
+              </li>
+              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                <a href="#" className="flex items-center">
+                  Account
+                </a>
+              </li>
+              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                <a href="#" className="flex items-center">
+                  Blocks
+                </a>
+              </li>
+              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
+                <a href="#" className="flex items-center">
+                  Docs
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Hide this when already logged in */}
+          {!isLogged && (
+            <div className="flex items-center gap-x-1">
+              <a href="/login">
+                <button
+                  className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
+                  type="button"
+                >
+                  <span>Log In</span>
+                </button>
+              </a>
+              <a href="/register">
+                <button
+                  className="hidden select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
+                  type="button"
+                >
+                  <span>Sign in</span>
+                </button>
+              </a>
+            </div>
+          )}
+
+          {/* Show this when already logged in */}
+          {isLogged && (
+            <div className="flex items-center gap-x-1">
+              <a href="/profile">
+                <button
+                  type="button"
+                  className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
+                >
+                  <span>Profile</span>
+                </button>
+              </a>
+            </div>
+          )}
+
+          <button
+            className="relative ml-auto h-6 max-h-[40px] w-6 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-inherit transition-all hover:bg-transparent focus:bg-transparent active:bg-transparent disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:hidden"
+            type="button"
+          >
+            <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+              ></svg>
+            </span>
+          </button>
+        </div>
       </div>
     </nav>
   );
-}
+};
+
+export default NavBar;
