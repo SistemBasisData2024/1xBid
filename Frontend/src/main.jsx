@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 import { ToastContainer } from "react-toastify";
 import Logout from "./pages/logout";
 import NavBar from "./components/navbar";
+import TokoDetails from './pages/TokoDetails';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: "/logout",
     element: <Logout />,
+  },
+  {
+    path: "/tokodetails",
+    element: <TokoDetails />,
   },
 ]);
 
