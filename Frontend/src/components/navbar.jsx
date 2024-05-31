@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
   const [isLogged, setIsLogged] = useState(false);
@@ -9,7 +11,7 @@ const NavBar = () => {
     if (token) {
       setIsLogged(true);
     }
-  });
+  }, []);
 
   return (
     <nav className="sticky top-0 z-10 block w-full max-w-full px-4 py-2 text-black bg-white border rounded-none shadow-md h-max border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
@@ -46,6 +48,16 @@ const NavBar = () => {
             </ul>
           </div>
 
+          {/* Search Bar */}
+          <Input
+            type="text"
+            placeholder="Search..."
+            className="w-64 p-2 border border-gray-300 rounded"
+          />
+          <Button className="bg-black text-white py-2 px-4 rounded">
+            Search
+          </Button>
+
           {/* Hide this when already logged in */}
           {!isLogged && (
             <div className="flex items-center gap-x-1">
@@ -71,14 +83,12 @@ const NavBar = () => {
           {/* Show this when already logged in */}
           {isLogged && (
             <div className="flex items-center gap-x-1">
-              <a href="/profile">
-                <button
-                  type="button"
-                  className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
-                >
-                  <span>Profile</span>
-                </button>
-              </a>
+              <Link
+                to="/profile"
+                className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
+              >
+                <span>Profile</span>
+              </Link>
             </div>
           )}
 

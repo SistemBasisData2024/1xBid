@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Signup";
 import Profile from "./pages/Profile";
+import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import { ToastContainer } from "react-toastify";
 import Logout from "./pages/logout";
@@ -14,7 +15,7 @@ import NavBar from "./components/navbar";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <HomePage />,
   },
   {
     path: "/login",

@@ -1,6 +1,8 @@
 import { topUpSaldoHandler } from "@/api/user.handler";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const SaldoTab = ({ user }) => {
   const [saldo, setSaldo] = useState("");
@@ -9,7 +11,7 @@ const SaldoTab = ({ user }) => {
     e.preventDefault();
     if (!saldo) return toast.error("Saldo must be filled");
     if (saldo < 0) return toast.error("Saldo must be a positive number");
-    
+
     const response = await topUpSaldoHandler(saldo);
     console.log(response);
     if (response) {
@@ -23,29 +25,28 @@ const SaldoTab = ({ user }) => {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold">Saldo</h2>
-      <p className="text-lg">Total Saldo: {user.saldo}</p>
-      <form onSubmit={topUpSubmit}>
-        <label className="block mb-2">
-          Amount
-          <input
-            type="number"
-            className="mt-2 p-2 w-full border rounded"
-            placeholder="Enter amount"
-            value={saldo}
-            onChange={(e) => setSaldo(e.target.value)}
-            required
-          />
-        </label>
-        <button
-          type="submit"
-          className="mt-2 py-2 px-4 bg-blue-500 text-white rounded"
-        >
-          Top Up
-        </button>
-      </form>
-    </div>
+    <Card className="p-6 shadow-lg rounded-lg bg-white">
+      <div>
+        <h2 className="text-xl font-bold">Saldo</h2>
+        <p className="text-lg">Total Saldo: {user.saldo}</p>
+        <form onSubmit={topUpSubmit}>
+          <label className="block mb-2">
+            Amount
+            <input
+              type="number"
+              className="mt-2 p-2 w-full border rounded"
+              placeholder="Enter amount"
+              value={saldo}
+              onChange={(e) => setSaldo(e.target.value)}
+              required
+            />
+          </label>
+          <Button className="mt-2 py-2 px-4 bg-black text-white rounded">
+            Top Up
+          </Button>
+        </form>
+      </div>
+    </Card>
   );
 };
 
