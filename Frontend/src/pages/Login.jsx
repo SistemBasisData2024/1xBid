@@ -19,6 +19,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await loginHandler(username, email, password);
+      console.log(response);
       if (response.message === "Login successfully") {
         localStorage.setItem("token", response.data.token);
         toast.success("Login successful");
@@ -106,7 +107,7 @@ const Login = () => {
           </form>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link to="/signup" className="underline">
+            <Link to="/register" className="underline">
               Sign up
             </Link>
           </div>
@@ -121,7 +122,6 @@ const Login = () => {
           height: "100vh",
         }}
       ></div>
-      <ToastContainer className="mt-4" />
     </div>
   );
 };
