@@ -26,3 +26,14 @@ export const loginHandler = async (username, email, password) => {
         return { message: error.message }
     }
 }
+
+export const logoutHandler = async () => {
+    try {
+        const response = await axios.post(BE_URL + '/auth/logout', { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        console.log(response);
+        if(response.status !== 200) throw new Error(response.data.message);
+        return response.data;
+    } catch (error) {
+        return { message: error.message }
+    }
+}
