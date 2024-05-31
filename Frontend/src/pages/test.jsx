@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  getUserHandler,
-  updateUserHandler,
-  addAddressHandler,
-  editAddressHandler,
-  topUpSaldoHandler,
-} from "@/api/user.handler";
+import { getUserHandler } from "@/api/user.handler";
 import { toast, ToastContainer } from "react-toastify";
 import ProfileTab from "@/components/profiles/profileTab";
 import AddressTab from "@/components/profiles/addressTab";
@@ -47,7 +41,7 @@ const ProfilePage = () => {
   return (
     <div className="p-4">
       <Navbar />
-      <div className="flex mt-16">
+      <div className="flex mt-16 bg-white">
         <img
           src="profile.jpg"
           alt="Profile"
@@ -89,12 +83,11 @@ const ProfilePage = () => {
 
         <div className="mt-4">
           {activeTab === "profile" && <ProfileTab user={user} />}
-
           {activeTab === "address" && <AddressTab address={address} />}
-
           {activeTab === "saldo" && <SaldoTab user={user} />}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
