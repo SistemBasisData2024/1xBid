@@ -4,6 +4,7 @@ const cors = require('cors');
 const authRoutes = require('./src/routes/Auth.routes');
 const tokoRoutes = require('./src/routes/Toko.routes');
 const userRoutes = require('./src/routes/User.routes');
+const homeRoutes = require('./src/routes/Home.routes');
 const utils = require('./src/utils/Auth.utils');
 const { pool } = require('./src/config/db.config');
 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/auth', authRoutes);
 app.use('/toko', tokoRoutes);
 app.use('/user', userRoutes);
+app.use('/home', homeRoutes);
 
 // interval every 5 minutes
 setInterval(utils.keepDBAlive, 1000*60*5);

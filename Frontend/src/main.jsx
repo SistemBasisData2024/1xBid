@@ -15,6 +15,7 @@ import TokoDetails from "./pages/TokoDetails";
 import EditShop from "./pages/EditShop";
 import AddProduct from "./pages/AddProduct";
 import Payment from "./pages/Payment";
+import NotFound from "./pages/PageNotFound";
 import Product from "./pages/Product";
 
 const router = createBrowserRouter([
@@ -34,16 +35,12 @@ const router = createBrowserRouter([
     path: "/profile",
     element: <ProfilePage />,
   },
-  // {
-  //   path: "/test",
-  //   element: <ProfilePage />,
-  // },
   {
     path: "/logout",
     element: <Logout />,
   },
   {
-    path: "/storedetails",
+    path: "/toko/:toko_id",
     element: <TokoDetails />,
   },
   {
@@ -57,6 +54,10 @@ const router = createBrowserRouter([
   {
     path: "/payment",
     element: <Payment />,
+  },
+  {
+    path: "/notfound",
+    element: <NotFound />,
   },
   {
     path: "/product",

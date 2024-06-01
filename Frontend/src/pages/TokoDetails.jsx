@@ -1,19 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PlusCircle, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { getTokoHandler } from "@/api/toko.handler";
+import { toast } from "react-toastify";
 
 const TokoDetails = () => {
+    const { toko_id } = useParams();
+    // const [toko, setToko] = useState({});
+    // const [barang, setBarang] = useState([]);
+
     const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     const fetchToko = async () => {
+    //         const response = await getTokoHandler(toko_id);
+    //         if (response) {
+    //             setToko(response);
+    //             setBarang(response.barang);
+    //         } else {
+    //             navigate("/notfound");
+    //         }
+    //     };
+
+    //     fetchToko();
+    // }, [toko_id]);
 
     const toko = {
         nama_toko: "Toko Sukses",

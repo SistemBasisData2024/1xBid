@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -9,7 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 
-const product = {
+// const ProductPage = () => {
+//   const { toko_id, barang_id } = useParams();
+//   const [product, setProduct] = useState({});
+
+const ProductPage = {
   id: 1,
   name: "Product Name",
   image: "https://via.placeholder.com/150",
@@ -117,4 +122,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default ProductPage;
