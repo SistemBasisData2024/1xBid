@@ -52,7 +52,7 @@ const NavBar = () => {
           <Input
             type="text"
             placeholder="Search..."
-            className="w-64 p-2 border border-gray-300 rounded"
+            className="w-64 p-2 border border-gray-300 rounded "
           />
           <Button className="bg-black text-white py-2 px-4 rounded">
             Search
