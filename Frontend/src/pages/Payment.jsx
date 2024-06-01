@@ -23,7 +23,7 @@ const Payment = () => {
     };
 
     const barang = [
-        { barang_id: 1, nama_barang: "Barang 1", harga_awal: "$500.00" },
+        { nama_barang: "Barang 1", harga_awal: "$500.00" },
     ];
 
     return (
