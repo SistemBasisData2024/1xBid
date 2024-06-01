@@ -1,4 +1,5 @@
 const { pool } = require('../config/db.config');
+const bcrypt = require('bcrypt');
 
 exports.getUserProfile = async (user_id) => {
     try {
@@ -21,6 +22,11 @@ exports.updateUserProfile = async (user_id, body) => {
         if (user.role && user.role === 'Admin') throw new Error('Forbidden');
 
         if (user.account_status) delete user.account_status;
+
+        if(user.password) {
+            const hashedPassword = await bcrypt.hash(user.password, 10);
+            user.password = hashedPassword;
+        }
 
         const fields = [];
         const values = [];
