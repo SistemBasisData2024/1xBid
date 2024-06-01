@@ -11,6 +11,7 @@ import TokoDetails from './pages/TokoDetails';
 import EditShop from './pages/EditShop';
 import AddProduct from './pages/AddProduct';
 import Payment from './pages/Payment';
+import OnBid from "./pages/OnBid";
 
 const AppRoutes = () => (
   <Router>
@@ -26,9 +27,10 @@ const AppRoutes = () => (
       <Route path="/editshop" element={<EditShop />} /> 
       <Route path="/addproduct" element={<AddProduct />} /> 
       <Route path="/payment" element={<Payment />} /> 
+      <Route path="/onbid" element={<OnBid />} />
     </Routes>
   </Router>
 );
 
-// buat payment, storedetails, editshop, addproduct blm di tambahin /:id
+// buat payment, storedetails, editshop, addproduct, onbid blm di tambahin /:id
 export default AppRoutes;
