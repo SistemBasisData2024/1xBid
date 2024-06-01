@@ -11,7 +11,10 @@ import ProfilePage from "./pages/ProfilePage";
 import { ToastContainer } from "react-toastify";
 import Logout from "./pages/logout";
 import NavBar from "./components/navbar";
-import TokoDetails from './pages/TokoDetails';
+import TokoDetails from "./pages/TokoDetails";
+import EditShop from "./pages/EditShop";
+import AddProduct from "./pages/AddProduct";
+import Payment from "./pages/Payment";
 
 const router = createBrowserRouter([
   {
@@ -39,9 +42,21 @@ const router = createBrowserRouter([
     element: <Logout />,
   },
   {
-    path: "/tokodetails",
+    path: "/storedetails",
     element: <TokoDetails />,
   },
+  {
+    path: "/editshop",
+    element: <EditShop />,
+  },
+  {
+    path: "/addproduct",
+    element: <AddProduct />,
+  },
+  {
+    path: "/payment",
+    element: <Payment />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

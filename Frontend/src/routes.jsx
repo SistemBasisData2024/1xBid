@@ -8,6 +8,9 @@ import Product from "./pages/Product";
 import Store from "./pages/Store";
 import Search from "./pages/Search";
 import TokoDetails from './pages/TokoDetails';
+import EditShop from './pages/EditShop';
+import AddProduct from './pages/AddProduct';
+import Payment from './pages/Payment';
 
 const AppRoutes = () => (
   <Router>
@@ -19,9 +22,13 @@ const AppRoutes = () => (
       <Route path="/product/:productId" element={<Product />} />
       <Route path="/store/:id" element={<Store />} />
       <Route path="/search" element={<Search />} />
-      <Route path="/tokodetails" element={<TokoDetails />} /> 
+      <Route path="/storedetails" element={<TokoDetails />} /> 
+      <Route path="/editshop" element={<EditShop />} /> 
+      <Route path="/addproduct" element={<AddProduct />} /> 
+      <Route path="/payment" element={<Payment />} /> 
     </Routes>
   </Router>
 );
 
+// buat payment, storedetails, editshop, addproduct blm di tambahin /:id
 export default AppRoutes;
