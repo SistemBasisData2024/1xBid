@@ -16,6 +16,7 @@ import EditShop from "./pages/EditShop";
 import AddProduct from "./pages/AddProduct";
 import Payment from "./pages/Payment";
 import NotFound from "./pages/PageNotFound";
+import Product from "./pages/Product";
 
 const router = createBrowserRouter([
   {
@@ -57,7 +58,11 @@ const router = createBrowserRouter([
   {
     path: "/notfound",
     element: <NotFound />,
-  }
+  },
+  {
+    path: "/product",
+    element: <Product />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
