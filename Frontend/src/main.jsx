@@ -15,6 +15,7 @@ import TokoDetails from "./pages/TokoDetails";
 import EditShop from "./pages/EditShop";
 import AddProduct from "./pages/AddProduct";
 import Payment from "./pages/Payment";
+import Product from "./pages/Product";
 
 const router = createBrowserRouter([
   {
@@ -56,7 +57,11 @@ const router = createBrowserRouter([
   {
     path: "/payment",
     element: <Payment />,
-  }
+  },
+  {
+    path: "/product",
+    element: <Product />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

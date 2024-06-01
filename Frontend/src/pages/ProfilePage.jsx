@@ -3,6 +3,7 @@ import { getUserHandler } from "@/api/user.handler";
 import ProfileTab from "@/components/profiles/profileTab";
 import AddressTab from "@/components/profiles/addressTab";
 import SaldoTab from "@/components/profiles/saldoTab";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -39,7 +40,7 @@ const ProfilePage = () => {
         ).toLocaleDateString();
         setUser(response.user);
         setAddress(response.address);
-        const avatarUrl = await getAvatar(user.fullname);
+        const avatarUrl = await getAvatar(response.user.fullname);
         setUserAvatar(avatarUrl);
       } else {
         window.location.href = "/login";
@@ -48,7 +49,7 @@ const ProfilePage = () => {
     fetchUser();
   }, []);
 
-  const handleTabClick = (tab) => {
+  const handleTabChange = (tab) => {
     setActiveTab(tab);
     localStorage.setItem("activeTab", tab);
   };
@@ -60,6 +61,7 @@ const ProfilePage = () => {
           <img
             src={userAvatar}
             className="w-32 h-32 rounded-full border-2 border-blue-500"
+            alt="User Avatar"
           />
           <div className="ml-4">
             <h1 className="text-2xl font-bold text-blue-500">
@@ -79,40 +81,25 @@ const ProfilePage = () => {
       </div>
 
       <div className="mt-4">
-        <div className="flex space-x-4">
-          <button
-            onClick={() => handleTabClick("profile")}
-            className={`py-2 px-4 ${
-              activeTab === "profile" ? "border-b-2 border-blue-500" : ""
-            }`}
-          >
-            User Profile
-          </button>
-          <button
-            onClick={() => handleTabClick("address")}
-            className={`py-2 px-4 ${
-              activeTab === "address" ? "border-b-2 border-blue-500" : ""
-            }`}
-          >
-            Address
-          </button>
-          <button
-            onClick={() => handleTabClick("saldo")}
-            className={`py-2 px-4 ${
-              activeTab === "saldo" ? "border-b-2 border-blue-500" : ""
-            }`}
-          >
-            Saldo
-          </button>
-        </div>
+        <Tabs value={activeTab} onValueChange={handleTabChange}>
+          <TabsList>
+            <TabsTrigger value="profile">User Profile</TabsTrigger>
+            <TabsTrigger value="address">Address</TabsTrigger>
+            <TabsTrigger value="saldo">Saldo</TabsTrigger>
+          </TabsList>
 
-        <div className="mt-4">
-          {activeTab === "profile" && <ProfileTab user={user} />}
+          <TabsContent value="profile">
+            <ProfileTab user={user} />
+          </TabsContent>
 
-          {activeTab === "address" && <AddressTab address={address} />}
+          <TabsContent value="address">
+            <AddressTab address={address} />
+          </TabsContent>
 
-          {activeTab === "saldo" && <SaldoTab user={user} />}
-        </div>
+          <TabsContent value="saldo">
+            <SaldoTab user={user} />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
