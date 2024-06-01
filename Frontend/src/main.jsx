@@ -39,7 +39,7 @@ const router = createBrowserRouter([
     element: <Logout />,
   },
   {
-    path: "/tokodetails",
+    path: "/toko/:toko_id",
     element: <TokoDetails />,
   },
 ]);

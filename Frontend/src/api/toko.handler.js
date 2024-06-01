@@ -3,9 +3,10 @@ import axios from 'axios';
 export const getTokoHandler = async (toko_id) => {
     try {
         const response = await axios.get(BE_URL + '/toko/' + toko_id);
+        if(response.status !== 200) throw new Error('Failed to fetch toko data');
         return response.data;
     } catch (error) {
-        console.error(error);
+        return false;
     }
 }
 

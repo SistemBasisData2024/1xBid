@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { updateUserHandler } from "@/api/user.handler";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { toast } from "react-toastify";
 
 const ProfileTab = ({ user }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

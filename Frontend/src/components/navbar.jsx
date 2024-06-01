@@ -14,7 +14,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-10 block w-full max-w-full px-4 py-2 text-black bg-white border rounded-none shadow-md h-max border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
+    <nav className="sticky top-0 z-10 block w-full max-w-full px-4 py-2 text-black bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 border rounded-none shadow-md h-max border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
         <a
           href="/"
@@ -83,12 +83,11 @@ const NavBar = () => {
           {/* Show this when already logged in */}
           {isLogged && (
             <div className="flex items-center gap-x-1">
-              <Link
-                to="/profile"
-                className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
-              >
-                <span>Profile</span>
-              </Link>
+              <a href="/profile">
+                <button className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block">
+                  <span>Profile</span>
+                </button>
+              </a>
             </div>
           )}
 
