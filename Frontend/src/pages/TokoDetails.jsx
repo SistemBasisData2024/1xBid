@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusCircle, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,22 @@ import {
     CardTitle,
     CardContent,
 } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TimeInput } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { getTokoHandler } from "@/api/toko.handler";
+import { toast } from "react-toastify";
 
 const TokoDetails = () => {
     const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -32,6 +43,23 @@ const TokoDetails = () => {
         end_time: "",
         bid_multiplier: ""
     });
+
+    const { toko_id } = useParams();
+    const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     const fetchToko = async () => {
+    //         const response = await getTokoHandler(toko_id);
+    //         if (response) {
+    //             setToko(response);
+    //             setBarang(response.barang);
+    //         } else {
+    //             navigate("/notfound");
+    //         }
+    //     };
+
+    //     fetchToko();
+    // }, [toko_id]);
 
     const barang = [
         { barang_id: 1, nama_barang: "Barang 1", status: "Tersedia", kategori: "Makanan", harga_awal: "$150.00" },

@@ -17,6 +17,8 @@ import EditShop from "./pages/EditShop";
 import AddProduct from "./pages/AddProduct";
 import Payment from "./pages/Payment";
 import OnBid from "./pages/OnBid";
+import NotFound from "./pages/PageNotFound";
+import Product from "./pages/Product";
 
 const router = createBrowserRouter([
   {
@@ -40,7 +42,7 @@ const router = createBrowserRouter([
     element: <Logout />,
   },
   {
-    path: "/storedetails",
+    path: "/toko/:toko_id",
     element: <TokoDetails />,
   },
   {
@@ -59,6 +61,13 @@ const router = createBrowserRouter([
     path: "/onbid",
     element: <OnBid />,
   }
+    path: "/notfound",
+    element: <NotFound />,
+  },
+  {
+    path: "/product",
+    element: <Product />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
