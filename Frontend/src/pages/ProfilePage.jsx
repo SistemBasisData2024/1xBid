@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserHandler } from "@/api/user.handler";
+import { getUserHandler, openTokoHandler } from "@/api/user.handler";
 import ProfileTab from "@/components/profiles/profileTab";
 import AddressTab from "@/components/profiles/addressTab";
 import SaldoTab from "@/components/profiles/saldoTab";
@@ -26,6 +26,12 @@ const ProfilePage = () => {
   const [userAvatar, setUserAvatar] = useState("");
   const [address, setAddress] = useState([]);
   const [toko, setTokos] = useState({});
+  const [editData, setEditData] = useState({
+    nama_toko: "",
+    deskripsi: "",
+    toko_picture: "",
+  });
+
   const navigate = useNavigate();
 
   const getAvatar = async (fullname) => {
@@ -47,13 +53,13 @@ const ProfilePage = () => {
     }
     const fetchUser = async () => {
       const response = await getUserHandler();
-      console.log(response);
       if (response) {
         response.user.date_of_birth = new Date(
           response.user.date_of_birth
         ).toLocaleDateString();
         setUser(response.user);
         setAddress(response.address);
+        setTokos(response.toko);
 
         const avatarUrl = await getAvatar(response.user.fullname);
         setUserAvatar(avatarUrl);
@@ -71,12 +77,23 @@ const ProfilePage = () => {
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
+    setEditData({ ...editData, [name]: value });
   };
 
-  const handleEditSubmit = (e) => {
+  const handleAddTokoSubmit = async (e) => {
     e.preventDefault();
-    // Handle submit logic for editing shop
-    setEditModalOpen(false);
+    try {
+      const response = await openTokoHandler(editData.nama_toko, editData.deskripsi);
+      if(response) {
+        toast.success("Toko berhasil dibuat");
+        setTokos(response);
+        setModalOpen(false);
+      } else {
+        toast.error("Gagal membuat toko");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -108,7 +125,7 @@ const ProfilePage = () => {
             type="submit"
             onClick={() => {
               if (toko.toko_id) {
-                navigate(`/shop/${toko.toko_id}`);
+                navigate(`/toko/${toko.toko_id}`);
               } else {
                 setModalOpen(true);
               }
@@ -147,17 +164,17 @@ const ProfilePage = () => {
           <section className="min-h-screen flex items-center justify-center">
             <Card className="mx-auto max-w-md">
               <CardHeader>
-                <CardTitle className="text-xl">Edit Shop</CardTitle>
+                <CardTitle className="text-xl">Add Shop</CardTitle>
               </CardHeader>
               <CardContent>
-                <form className="space-y-4" onSubmit={handleEditSubmit}>
+                <form className="space-y-4" onSubmit={handleAddTokoSubmit}>
                   <div>
                     <Label htmlFor="nama_toko">Nama Toko</Label>
                     <Input
                       type="text"
                       name="nama_toko"
                       id="nama_toko"
-                      // value={editData.nama_toko}
+                      value={editData.nama_toko}
                       onChange={handleEditChange}
                       required
                     />
@@ -167,7 +184,7 @@ const ProfilePage = () => {
                     <textarea
                       name="deskripsi"
                       id="deskripsi"
-                      // value={editData.deskripsi}
+                      value={editData.deskripsi}
                       onChange={handleEditChange}
                       className="w-full p-2 border border-gray-300 rounded"
                       required
@@ -179,9 +196,9 @@ const ProfilePage = () => {
                       type="text"
                       name="toko_picture"
                       id="toko_picture"
-                      // value={editData.toko_picture}
+                      value={editData.toko_picture}
                       onChange={handleEditChange}
-                      required
+                      // required
                     />
                   </div>
                   <Button type="submit" className="w-full">

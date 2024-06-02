@@ -8,7 +8,7 @@ export const getUserHandler = async () => {
         console.log(response.data);
         if(response.status !== 200) throw new Error('Failed to fetch user data');
         if(response.status === 401) throw new Error('Unauthorized');
-        if(response.data.toko) return { message: response.data.message, user: response.data.data.user, address: response.data.data.address, toko: response.data.data.toko };
+        if(response.data.data.toko) return { message: response.data.message, user: response.data.data.user, address: response.data.data.address, toko: response.data.data.toko };
         return { message: response.data.message, user: response.data.data.user, address: response.data.data.address };
     } catch (error) {
         return false;
@@ -62,13 +62,13 @@ export const topUpSaldoHandler = async (saldo) => {
     }
 }
 
-export const openTokoHandler = async (nama_toko, toko_description) => {
+export const openTokoHandler = async (nama_toko, deskripsi) => {
     try {
-        if (!nama_toko || !toko_description) throw new Error('All fields must be filled');
+        if (!nama_toko || !deskripsi) throw new Error('All fields must be filled');
         if (nama_toko.match(/[^a-zA-Z0-9 ]/)) throw new Error('Nama toko cannot contain special characters');
-        const response = await axios.post(BE_URL + '/user/open-toko', { nama_toko, toko_description }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
-        return response.data;
+        const response = await axios.post(BE_URL + '/user/open-toko', { nama_toko, deskripsi }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        return response.data.data;
     } catch (error) {
-        console.error(error);
+        return false
     }
 }
