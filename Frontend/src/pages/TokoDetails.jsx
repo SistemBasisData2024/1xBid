@@ -24,35 +24,35 @@ import { toast } from "react-toastify";
 
 const TokoDetails = () => {
     const { toko_id } = useParams();
-    // const [toko, setToko] = useState({});
-    // const [barang, setBarang] = useState([]);
+    const [toko, setToko] = useState({});
+    const [barang, setBarang] = useState([]);
 
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const fetchToko = async () => {
-    //         const response = await getTokoHandler(toko_id);
-    //         if (response) {
-    //             setToko(response);
-    //             setBarang(response.barang);
-    //         } else {
-    //             navigate("/notfound");
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchToko = async () => {
+            const response = await getTokoHandler(toko_id);
+            if (response) {
+                setToko(response);
+                setBarang(response.barang);
+            } else {
+                navigate("/notfound");
+            }
+        };
 
-    //     fetchToko();
-    // }, [toko_id]);
+        fetchToko();
+    }, [toko_id]);
 
-    const toko = {
-        nama_toko: "Toko Sukses",
-        deskripsi: "Toko yang menjual berbagai macam barang berkualitas.",
-        toko_picture: "https://via.placeholder.com/150"
-    };
+    // const toko = {
+    //     nama_toko: "Toko Sukses",
+    //     deskripsi: "Toko yang menjual berbagai macam barang berkualitas.",
+    //     toko_picture: "https://via.placeholder.com/150"
+    // };
 
-    const barang = [
-        { barang_id: 1, nama_barang: "Barang 1", status: "Tersedia", kategori: "Makanan", harga_awal: "$150.00" },
-        { barang_id: 2, nama_barang: "Barang 2", status: "Habis", kategori: "Minuman", harga_awal: "$250.00" },
-    ];
+    // const barang = [
+    //     { barang_id: 1, nama_barang: "Barang 1", status: "Tersedia", kategori: "Makanan", harga_awal: "$150.00" },
+    //     { barang_id: 2, nama_barang: "Barang 2", status: "Habis", kategori: "Minuman", harga_awal: "$250.00" },
+    // ];
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">

@@ -57,15 +57,17 @@ const router = createBrowserRouter([
   {
     path: "/notfound",
     element: <NotFound />,
-  }
+  },
+  {
+    path: "*",
+    element: <NotFound />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <div className="p-4">
-      <NavBar />
-      <RouterProvider router={router} />
-    </div>
+    <NavBar />
+    <RouterProvider router={router} />
     <ToastContainer autoClose={3000} />
   </React.StrictMode>
 );

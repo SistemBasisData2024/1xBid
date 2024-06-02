@@ -8,6 +8,8 @@ exports.getUserProfile = async (user_id) => {
         delete responseUser.rows[0].password;
         const responseAddress = await pool.query('SELECT * FROM addresses WHERE user_id = $1', [user_id]);
         const address = responseAddress.rows;
+        const responseToko = await pool.query('SELECT * FROM toko WHERE owner_id = $1', [user_id]);
+        const toko = responseToko.rows[0];
         return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address } };
     } catch (error) {
         return { message: error.message };
