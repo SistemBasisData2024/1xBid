@@ -5,9 +5,10 @@ const BE_URL = import.meta.env.VITE_BE_URL;
 export const getUserHandler = async () => {
     try {
         const response = await axios.get(BE_URL + '/user/profile', { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        console.log(response.data);
         if(response.status !== 200) throw new Error('Failed to fetch user data');
         if(response.status === 401) throw new Error('Unauthorized');
-        console.log(response.data);
+        if(response.data.toko) return { message: response.data.message, user: response.data.data.user, address: response.data.data.address, toko: response.data.data.toko };
         return { message: response.data.message, user: response.data.data.user, address: response.data.data.address };
     } catch (error) {
         return false;

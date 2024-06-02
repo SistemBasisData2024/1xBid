@@ -49,7 +49,7 @@ const calculateProgress = (endTime, duration) => {
 
 const Product = () => {
   const [timeLeft, setTimeLeft] = useState(
-    calculateTimeLeft(product.auctionStart)
+    calculateTimeLeft(ProductPage.auctionStart)
   );
   const [progress, setProgress] = useState(100);
 
@@ -57,8 +57,8 @@ const Product = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft(product.auctionStart));
-      setProgress(calculateProgress(product.auctionStart, auctionDuration));
+      setTimeLeft(calculateTimeLeft(ProductPage.auctionStart));
+      setProgress(calculateProgress(ProductPage.auctionStart, auctionDuration));
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -83,24 +83,24 @@ const Product = () => {
       <div className="flex flex-col lg:flex-row">
         <CardHeader className="flex-shrink-0 lg:w-1/3">
           <img
-            src={product.image}
-            alt={product.name}
+            src={ProductPage.image}
+            alt={ProductPage.name}
             className="w-full h-auto rounded-l-lg lg:rounded-none"
           />
         </CardHeader>
         <CardContent className="flex-grow p-6">
-          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+          <h1 className="text-2xl font-bold mb-2">{ProductPage.name}</h1>
           <Separator className="my-2" />
           <a
-            href={`/shop/${product.shop.id}`}
+            href={`/shop/${ProductPage.shop.id}`}
             className="text-blue-500 underline"
           >
-            {product.shop.name}
+            {ProductPage.shop.name}
           </a>
           <Separator className="my-2" />
-          <p className="text-lg text-blue-600 mb-4">{product.price}</p>
+          <p className="text-lg text-blue-600 mb-4">{ProductPage.price}</p>
           <Separator className="my-2" />
-          <p className="mb-4">{product.description}</p>
+          <p className="mb-4">{ProductPage.description}</p>
           <Separator className="my-2" />
           <div className="mt-4">
             {timerComponents.length ? (
@@ -122,4 +122,4 @@ const Product = () => {
   );
 };
 
-export default ProductPage;
+export default Product;

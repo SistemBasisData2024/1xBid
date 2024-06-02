@@ -8,8 +8,7 @@ import { loginHandler } from "@/api/auth.handler";
 import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState("");
@@ -18,7 +17,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginHandler(username, email, password);
+      const response = await loginHandler(usernameOrEmail, password);
       console.log(response);
       if (response.message === "Login successfully") {
         localStorage.setItem("token", response.data.token);
@@ -41,7 +40,7 @@ const Login = () => {
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold">Login</h1>
             <p className="text-balance text-muted-foreground">
-              Enter your email below to login to your account
+              Enter your username or email below to login to your account
             </p>
           </div>
           {error && (
@@ -49,25 +48,14 @@ const Login = () => {
           )}
           <form className="grid gap-4" onSubmit={handleSubmit}>
             <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="usernameOrEmail">Username or Email</Label>
               <Input
-                id="username"
+                id="usernameOrEmail"
                 type="text"
-                placeholder="Your username"
+                placeholder="Your username or email"
                 required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={usernameOrEmail}
+                onChange={(e) => setUsernameOrEmail(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
