@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {NextUIProvider} from "@nextui-org/system";
+import { NextUIProvider } from "@nextui-org/system";
 import "./index.css";
 import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -60,8 +60,13 @@ const router = createBrowserRouter([
   {
     path: "/onbid",
     element: <OnBid />,
-  }
+  },
+  {
     path: "/notfound",
+    element: <NotFound />,
+  },
+  {
+    path: "*",
     element: <NotFound />,
   },
   {
@@ -73,11 +78,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <NextUIProvider>
-    <div className="p-4">
       <NavBar />
       <RouterProvider router={router} />
-    </div>
-    <ToastContainer autoClose={3000} />
+      <ToastContainer autoClose={3000} />
     </NextUIProvider>
   </React.StrictMode>
 );

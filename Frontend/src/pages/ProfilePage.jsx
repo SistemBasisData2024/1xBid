@@ -14,6 +14,8 @@ const ProfilePage = () => {
   const [user, setUser] = useState({});
   const [userAvatar, setUserAvatar] = useState("");
   const [address, setAddress] = useState([]);
+  const [toko, setTokos] = useState({});
+  const navigate = useNavigate();
 
   const getAvatar = async (fullname) => {
     if (fullname) {
@@ -40,6 +42,8 @@ const ProfilePage = () => {
         ).toLocaleDateString();
         setUser(response.user);
         setAddress(response.address);
+        if (response.toko) setTokos(response.toko);
+
         const avatarUrl = await getAvatar(response.user.fullname);
         setUserAvatar(avatarUrl);
       } else {
@@ -70,14 +74,24 @@ const ProfilePage = () => {
             <p className="text-gray-600">{user.email}</p>
           </div>
         </div>
-        <a href="/logout">
-          <button
-            type="submit"
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Logout
-          </button>
-        </a>
+        <div className="flex space-x-4">
+          <a href="/logout">
+            <button
+              type="submit"
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Logout
+            </button>
+          </a>
+          <a href={toko.toko_id || "/open-toko"}>
+            <button
+              type="submit"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
+              {toko.toko_id ? "My Toko" : "Open Toko"}
+            </button>
+          </a>
+        </div>
       </div>
 
       <div className="mt-4">
