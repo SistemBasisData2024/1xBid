@@ -9,8 +9,9 @@ exports.getUserProfile = async (user_id) => {
         const responseAddress = await pool.query('SELECT * FROM addresses WHERE user_id = $1', [user_id]);
         const address = responseAddress.rows;
         const responseToko = await pool.query('SELECT * FROM toko WHERE owner_id = $1', [user_id]);
-        const toko = responseToko.rows[0];
-        return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address } };
+        // dont return toko if user is not a seller
+        if(responseToko.rows.length === 0) return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address } };
+        return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address, toko } };
     } catch (error) {
         return { message: error.message };
     }

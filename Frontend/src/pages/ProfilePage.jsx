@@ -6,11 +6,22 @@ import SaldoTab from "@/components/profiles/saldoTab";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState(
     localStorage.getItem("activeTab") || "profile"
   );
+  const [isModalOpen, setModalOpen] = useState(false);
   const [user, setUser] = useState({});
   const [userAvatar, setUserAvatar] = useState("");
   const [address, setAddress] = useState([]);
@@ -36,13 +47,13 @@ const ProfilePage = () => {
     }
     const fetchUser = async () => {
       const response = await getUserHandler();
+      console.log(response);
       if (response) {
         response.user.date_of_birth = new Date(
           response.user.date_of_birth
         ).toLocaleDateString();
         setUser(response.user);
         setAddress(response.address);
-        if (response.toko) setTokos(response.toko);
 
         const avatarUrl = await getAvatar(response.user.fullname);
         setUserAvatar(avatarUrl);
@@ -56,6 +67,16 @@ const ProfilePage = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     localStorage.setItem("activeTab", tab);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    // Handle submit logic for editing shop
+    setEditModalOpen(false);
   };
 
   return (
@@ -83,14 +104,19 @@ const ProfilePage = () => {
               Logout
             </button>
           </a>
-          <a href={toko.toko_id || "/open-toko"}>
-            <button
-              type="submit"
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            >
-              {toko.toko_id ? "My Toko" : "Open Toko"}
-            </button>
-          </a>
+          <button
+            type="submit"
+            onClick={() => {
+              if (toko.toko_id) {
+                navigate(`/shop/${toko.toko_id}`);
+              } else {
+                setModalOpen(true);
+              }
+            }}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            {toko.toko_id ? "My Toko" : "Open Toko"}
+          </button>
         </div>
       </div>
 
@@ -115,6 +141,58 @@ const ProfilePage = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <section className="min-h-screen flex items-center justify-center">
+            <Card className="mx-auto max-w-md">
+              <CardHeader>
+                <CardTitle className="text-xl">Edit Shop</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="space-y-4" onSubmit={handleEditSubmit}>
+                  <div>
+                    <Label htmlFor="nama_toko">Nama Toko</Label>
+                    <Input
+                      type="text"
+                      name="nama_toko"
+                      id="nama_toko"
+                      // value={editData.nama_toko}
+                      onChange={handleEditChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="deskripsi">Deskripsi</Label>
+                    <textarea
+                      name="deskripsi"
+                      id="deskripsi"
+                      // value={editData.deskripsi}
+                      onChange={handleEditChange}
+                      className="w-full p-2 border border-gray-300 rounded"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="toko_picture">Toko Picture URL</Label>
+                    <Input
+                      type="text"
+                      name="toko_picture"
+                      id="toko_picture"
+                      // value={editData.toko_picture}
+                      onChange={handleEditChange}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Save Changes
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+      )}
     </div>
   );
 };

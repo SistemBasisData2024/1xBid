@@ -50,19 +50,19 @@ const TokoDetails = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchToko = async () => {
-      const response = await getTokoHandler(toko_id);
-      if (response) {
-        setToko(response);
-        setBarang(response.barang);
-      } else {
-        navigate("/notfound");
-      }
-    };
+  // useEffect(() => {
+  //   const fetchToko = async () => {
+  //     const response = await getTokoHandler(toko_id);
+  //     if (response) {
+  //       setToko(response);
+  //       setBarang(response.barang);
+  //     } else {
+  //       navigate("/notfound");
+  //     }
+  //   };
 
-    fetchToko();
-  }, [toko_id]);
+  //   fetchToko();
+  // }, [toko_id]);
 
   const toko = {
     nama_toko: "Toko Sukses",
