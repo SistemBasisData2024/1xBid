@@ -3,7 +3,7 @@ const { pool } = require('../config/db.config');
 
 exports.isTokoOwner = async (req, res, next) => {
     try {
-        const token = req.headers.cookies.split('=')[1];
+        const token = req.headers.cookie.split('=')[1];
         if(!token) throw new Error('Token is required');
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user_id = decoded.user_id;
@@ -21,7 +21,7 @@ exports.isTokoOwner = async (req, res, next) => {
 
 exports.isAlreadyTokoOwner = async (req, res, next) => {
     try {
-        const token = req.headers.cookies.split('=')[1];
+        const token = req.headers.cookie.split('=')[1];
         if(!token) throw new Error('Token is required');
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user_id = decoded.user_id;
