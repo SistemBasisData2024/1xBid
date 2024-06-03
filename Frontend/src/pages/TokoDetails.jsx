@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusCircle, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,9 +20,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { TimeInput } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { getTokoHandler } from "@/api/toko.handler";
+import {
+    addBarangHandler,
+    getTokoHandler,
+    updateTokoHandler,
+} from "@/api/toko.handler";
 import { toast } from "react-toastify";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -34,48 +39,56 @@ const TokoDetails = () => {
     const [editData, setEditData] = useState({
         nama_toko: "Toko Sukses",
         deskripsi: "Toko yang menjual berbagai macam barang berkualitas.",
-        toko_picture: "https://via.placeholder.com/150"
+        toko_picture: "https://via.placeholder.com/150",
     });
     const [newProduct, setNewProduct] = useState({
         nama_barang: "",
         harga_awal: "",
         kategori: "",
         deskripsi: "",
-        start_time: null,
-        end_time: null,
-        bid_multiplier: ""
+        start_time: "",
+        end_time: "",
+        bid_multiplier: "",
     });
 
+    const getAvatar = async (fullname) => {
+        if (fullname) {
+        const response = await fetch(
+            "https://ui-avatars.com/api/?name=" + fullname.replace(" ", "+")
+        );
+        const avatarUrl = await response.url;
+        return avatarUrl;
+        } else {
+        return "https://img.icons8.com/?size=100&id=99268&format=png&color=000000";
+        }
+    };
+
     const { toko_id } = useParams();
+    const [barang, setBarang] = useState([]);
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const fetchToko = async () => {
-    //         const response = await getTokoHandler(toko_id);
-    //         if (response) {
-    //             setToko(response);
-    //             setBarang(response.barang);
-    //         } else {
-    //             navigate("/notfound");
-    //         }
-    //     };
-
-    //     fetchToko();
-    // }, [toko_id]);
-
-    const barang = [
-        { barang_id: 1, nama_barang: "Barang 1", status: "Tersedia", kategori: "Makanan", harga_awal: "$150.00" },
-        { barang_id: 2, nama_barang: "Barang 2", status: "Habis", kategori: "Minuman", harga_awal: "$250.00" },
-    ];
+    useEffect(() => {
+        const fetchToko = async () => {
+        const response = await getTokoHandler(toko_id);
+        if (response) {
+            setBarang(response.barang);
+            const avatarUrl = await getAvatar(response.toko.nama_toko);
+            setEditData({
+            nama_toko: response.toko.nama_toko,
+            deskripsi: response.toko.deskripsi,
+            toko_picture: avatarUrl,
+            });
+        } else {
+            navigate("/notfound");
+            toast.error("Failed to fetch shop data");
+        }
+        };
+        fetchToko();
+    }, [toko_id]);
 
     const handleEditChange = (e) => {
         const { name, value } = e.target;
         setEditData({ ...editData, [name]: value });
-    };
-
-    const handleProductChange = (e) => {
-        const { name, value } = e.target;
-        setNewProduct({ ...newProduct, [name]: value });
     };
 
     const handleStartTimeChange = (newValue) => {
@@ -86,15 +99,32 @@ const TokoDetails = () => {
         setNewProduct({ ...newProduct, end_time: newValue });
     };
 
-    const handleEditSubmit = (e) => {
+    const handleProductChange = (e) => {
+        const { name, value } = e.target;
+        setNewProduct({ ...newProduct, [name]: value });
+    };
+
+    const handleEditSubmit = async (e) => {
         e.preventDefault();
-        // Handle submit logic for editing shop
+        const response = await updateTokoHandler(toko_id, editData.deskripsi);
+        if (response) {
+        toast.success("Shop updated successfully");
+        window.location.reload();
+        } else {
+        toast.error("Failed to update shop");
+        }
         setEditModalOpen(false);
     };
 
-    const handleProductSubmit = (e) => {
+    const handleProductSubmit = async (e) => {
         e.preventDefault();
-        // Handle submit logic for adding product
+        const response = await addBarangHandler(toko_id, newProduct);
+        if (response) {
+        toast.success("Product added successfully");
+        window.location.reload();
+        } else {
+        toast.error("Failed to add product");
+        }
         setAddProductModalOpen(false);
     };
 
@@ -284,7 +314,7 @@ const TokoDetails = () => {
                                     </div>
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <div>
-                                            <Label htmlFor="start_time">Start Time  </Label>
+                                            <Label htmlFor="start_time">Start Time</Label>
                                             <DateTimePicker
                                                 label="Start Time"
                                                 value={newProduct.start_time}
@@ -298,7 +328,7 @@ const TokoDetails = () => {
                                             />
                                         </div>
                                         <div>
-                                            <Label htmlFor="end_time">End Time  </Label>
+                                            <Label htmlFor="end_time">End Time</Label>
                                             <DateTimePicker
                                                 label="End Time"
                                                 value={newProduct.end_time}

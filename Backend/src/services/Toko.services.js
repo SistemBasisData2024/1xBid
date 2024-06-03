@@ -3,9 +3,9 @@ const { pool } = require('../config/db.config');
 exports.getTokoById = async (params) => {
     try {
         const { toko_id } = params;
-        if(!toko_id) throw new Error('Toko id is required');
+        if (!toko_id) throw new Error('Toko id is required');
         const responseToko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [toko_id]);
-        if(responseToko.rows.length === 0) throw new Error('Toko not found');
+        if (responseToko.rows.length === 0) throw new Error('Toko not found');
 
         const responseBarang = await pool.query('SELECT * FROM barang WHERE barang_id IN (SELECT barang_id FROM barangToko WHERE toko_id = $1)', [toko_id]);
 
@@ -19,11 +19,11 @@ exports.updateToko = async (params, body) => {
     try {
         const { deskripsi } = body;
         const { toko_id } = params;
-        if(!deskripsi) throw new Error('Deskripsi is required');
-        if(!toko_id) throw new Error('Toko id is required');
+        if (!deskripsi) throw new Error('Deskripsi is required');
+        if (!toko_id) throw new Error('Toko id is required');
 
         const response = await pool.query('UPDATE toko SET deskripsi = $1 WHERE toko_id = $2 RETURNING *', [deskripsi, toko_id]);
-        if(response.rows.length === 0) throw new Error('Failed to update toko');
+        if (response.rows.length === 0) throw new Error('Failed to update toko');
 
         return { message: 'Toko updated successfully', data: response.rows[0] };
     } catch (error) {
@@ -34,10 +34,10 @@ exports.updateToko = async (params, body) => {
 exports.deleteToko = async (params) => {
     try {
         const { toko_id } = params;
-        if(!toko_id) throw new Error('Toko id is required');
+        if (!toko_id) throw new Error('Toko id is required');
 
         const response = await pool.query('UPDATE toko SET toko_status = $1 WHERE toko_id = $2 RETURNING *', ['Deleted', toko_id]);
-        if(response.rowCount === 0) throw new Error('Failed to delete toko');
+        if (response.rowCount === 0) throw new Error('Failed to delete toko');
 
         return { message: 'Toko deleted successfully', data: response.rows[0] };
     } catch (error) {
@@ -57,7 +57,7 @@ exports.createBarang = async (params, body) => {
 
         const barangTokoResponse = await pool.query('INSERT INTO barangToko (barang_id, toko_id) VALUES ($1, $2) RETURNING *', [response.rows[0].barang_id, toko_id]);
         if (barangTokoResponse.rows.length === 0) throw new Error('Failed to create barang');
-        
+
         return { message: 'Create barang successfully', data: response.rows[0] }
     } catch (error) {
         return { message: error.message }
@@ -78,9 +78,9 @@ exports.editBarang = async (params, body) => {
 
         if (isBarangInDB.rows[0].start_time < new Date()) throw new Error('Barang has been started, cannot update Barang');
 
-        if(barang.toko_id) delete barang.toko_id;
-        if(barang.barang_id) delete barang.barang_id;
-        if(barang.status) delete barang.status;
+        if (barang.toko_id) delete barang.toko_id;
+        if (barang.barang_id) delete barang.barang_id;
+        if (barang.status) delete barang.status;
 
         const fields = [];
         const values = [];
@@ -105,7 +105,7 @@ exports.editBarang = async (params, body) => {
 exports.deleteBarang = async (params) => {
     try {
         const { toko_id, barang_id } = params;
-        if(!barang_id) throw new Error('Missing required field');
+        if (!barang_id) throw new Error('Missing required field');
 
         const isBarangValid = await pool.query('SELECT * FROM barangToko WHERE barang_id = $1 AND toko_id = $2', [barang_id, toko_id]);
         if (isBarangValid.rows.length === 0) throw new Error('No barang found');
@@ -114,6 +114,23 @@ exports.deleteBarang = async (params) => {
         if (response.rows.length === 0) throw new Error('Failed to delete barang');
 
         return { message: 'Delete barang successfully', data: response.rows[0] }
+    } catch (error) {
+        return { message: error.message }
+    }
+}
+
+exports.getBarangById = async (params) => {
+    try {
+        const { barang_id, toko_id } = params;
+        if (!barang_id) throw new Error('Barang id is required');
+
+        const response = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [barang_id]);
+        if (response.rows.length === 0) throw new Error('Barang not found');
+
+        const isBarangValid = await pool.query('SELECT * FROM barangToko WHERE barang_id = $1 AND toko_id = $2', [barang_id, toko_id]);
+        if (isBarangValid.rows.length === 0) throw new Error('No barang found');
+
+        return { message: 'Get barang successfully', data: response.rows[0] }
     } catch (error) {
         return { message: error.message }
     }

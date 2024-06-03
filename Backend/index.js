@@ -5,8 +5,10 @@ const authRoutes = require('./src/routes/Auth.routes');
 const tokoRoutes = require('./src/routes/Toko.routes');
 const userRoutes = require('./src/routes/User.routes');
 const homeRoutes = require('./src/routes/Home.routes');
+const bidRoutes = require('./src/routes/Bid.routes');
 const utils = require('./src/utils/Auth.utils');
 const { pool } = require('./src/config/db.config');
+const { updateStatus, bidWinner } = require('./src/routines/Bid.routines');
 
 dotenv.config();
 const app = express();
@@ -29,9 +31,14 @@ app.use('/auth', authRoutes);
 app.use('/toko', tokoRoutes);
 app.use('/user', userRoutes);
 app.use('/home', homeRoutes);
+app.use('/bid', bidRoutes);
 
 // interval every 5 minutes
 setInterval(utils.keepDBAlive, 1000*60*5);
+setInterval(() => {
+   updateStatus();
+   bidWinner(); 
+}, 1000);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);

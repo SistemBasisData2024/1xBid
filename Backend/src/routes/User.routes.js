@@ -12,6 +12,6 @@ router.delete('/profile', userControllers.deleteUserProfile);
 router.post('/add-address', userControllers.addAddress);
 router.put('/edit-address', userControllers.editAddress);
 router.post('/top-up', userControllers.topUpSaldo);
-router.post('/open-toko', tokoMiddlewares.isAlreadyTokoOwner, userControllers.openToko)
+router.post('/open-toko', userControllers.openToko)
 
 module.exports = router;

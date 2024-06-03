@@ -8,7 +8,10 @@ exports.getUserProfile = async (user_id) => {
         delete responseUser.rows[0].password;
         const responseAddress = await pool.query('SELECT * FROM addresses WHERE user_id = $1', [user_id]);
         const address = responseAddress.rows;
-        return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address } };
+        const responseToko = await pool.query('SELECT * FROM toko WHERE owner_id = $1', [user_id]);
+        // dont return toko if user is not a seller
+        if(responseToko.rows.length === 0) return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address } };
+        return { message: 'User profile fetched successfully', data: { user: responseUser.rows[0], address, toko: responseToko.rows[0] } };
     } catch (error) {
         return { message: error.message };
     }
@@ -113,8 +116,11 @@ exports.topUpSaldo = async (user_id, body) => {
 exports.openToko = async (user_id, body) => {
     try {
         const { nama_toko, deskripsi } = body;
-        if (!user_id) throw new Error('Missing required field');
+        if (!user_id) throw new Error('Missing user_id field');
         if (!nama_toko || !deskripsi) throw new Error('Missing required field');
+
+        const tokoAlreadyResponse = await pool.query('SELECT * FROM toko WHERE owner_id = $1', [user_id]);
+        if (tokoAlreadyResponse.rows.length > 0) throw new Error('You already have a toko');
 
         const tokoResponse = await pool.query('INSERT INTO toko (nama_toko, deskripsi, owner_id) VALUES ($1, $2, $3) RETURNING *', [nama_toko, deskripsi, user_id]);
         if(tokoResponse.rows.length === 0) throw new Error('Failed to create toko');

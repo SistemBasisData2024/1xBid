@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -9,23 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-
-// const ProductPage = () => {
-//   const { toko_id, barang_id } = useParams();
-//   const [product, setProduct] = useState({});
-
-const ProductPage = {
-  id: 1,
-  name: "Product Name",
-  image: "https://via.placeholder.com/150",
-  price: "$99.99",
-  description: "Deskripsi produk ntar disini",
-  auctionStart: new Date(Date.now() + 3600 * 1000).toISOString(), // 1 hour from now
-  shop: {
-    id: 1,
-    name: "Shop Name",
-  },
-};
+import { getBarangHandler } from "@/api/toko.handler";
+import { toast } from "react-toastify";
 
 const calculateTimeLeft = (endTime) => {
   const difference = +new Date(endTime) - +new Date();
@@ -48,21 +33,37 @@ const calculateProgress = (endTime, duration) => {
 };
 
 const Product = () => {
-  const [timeLeft, setTimeLeft] = useState(
-    calculateTimeLeft(product.auctionStart)
-  );
+  const { toko_id, barang_id } = useParams();
+  const [timeLeft, setTimeLeft] = useState({});
   const [progress, setProgress] = useState(100);
+  const [product, setProduct] = useState({});
+  const navigate = useNavigate();
 
-  const auctionDuration = 3600 * 1000; // 1 hour in milliseconds
+  const fetchProduct = async () => {
+    const response = await getBarangHandler(toko_id, barang_id);
+    if (response) {
+      setProduct(response);
+    } else {
+      toast.error("Failed to fetch product");
+      navigate("/notfound");
+    }
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft(product.auctionStart));
-      setProgress(calculateProgress(product.auctionStart, auctionDuration));
-    }, 1000);
+    fetchProduct();
+  }, [toko_id, barang_id]);
 
-    return () => clearTimeout(timer);
-  }, [timeLeft, progress]);
+  useEffect(() => {
+    if (product.end_time) {
+      const auctionDuration = new Date(product.end_time) - new Date(product.start_time);
+      const timer = setTimeout(() => {
+        setTimeLeft(calculateTimeLeft(product.end_time));
+        setProgress(calculateProgress(product.end_time, auctionDuration));
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [product]);
 
   const timerComponents = [];
 
@@ -83,32 +84,32 @@ const Product = () => {
       <div className="flex flex-col lg:flex-row">
         <CardHeader className="flex-shrink-0 lg:w-1/3">
           <img
-            src={product.image}
-            alt={product.name}
+            src={product.image || "https://via.placeholder.com/150"}
+            alt={product.nama_barang || "Product"}
             className="w-full h-auto rounded-l-lg lg:rounded-none"
           />
         </CardHeader>
         <CardContent className="flex-grow p-6">
-          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+          <h1 className="text-2xl font-bold mb-2">{product.nama_barang || "Product Name"}</h1>
           <Separator className="my-2" />
           <a
-            href={`/shop/${product.shop.id}`}
+            href={`/shop/${product.toko_id}`}
             className="text-blue-500 underline"
           >
-            {product.shop.name}
+            {product.toko_name || "Shop Name"}
           </a>
           <Separator className="my-2" />
-          <p className="text-lg text-blue-600 mb-4">{product.price}</p>
+          <p className="text-lg text-blue-600 mb-4">{product.last_price ? `$${product.last_price}` : "Price"}</p>
           <Separator className="my-2" />
-          <p className="mb-4">{product.description}</p>
+          <p className="mb-4">{product.deskripsi || "Product description"}</p>
           <Separator className="my-2" />
           <div className="mt-4">
             {timerComponents.length ? (
               <div className="text-xl font-bold">
-                Auction starts in: {timerComponents}
+                Auction ends in: {timerComponents}
               </div>
             ) : (
-              <span className="text-xl font-bold">Auction has started!</span>
+              <span className="text-xl font-bold">Auction has ended!</span>
             )}
           </div>
           <Progress value={progress} className="mt-4" />
@@ -122,4 +123,4 @@ const Product = () => {
   );
 };
 
-export default ProductPage;
+export default Product;

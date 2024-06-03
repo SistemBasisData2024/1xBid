@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 exports.authenticate = async (req, res, next) => {
     try {
-        const token = req.headers.cookies.split('=')[1];
+        const token = req.headers.cookie.split('=')[1];
         if(!token) throw new Error('Token is required');
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user_id = decoded.user_id;
@@ -14,7 +14,7 @@ exports.authenticate = async (req, res, next) => {
 
 exports.isAdmin = async (req, res, next) => {
     try {
-        const token = req.headers.cookies.split('=')[1];
+        const token = req.headers.cookie.split('=')[1];
         if(!token) throw new Error('Token is required');
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if(decoded.role !== 'admin') throw new Error('Forbidden');
