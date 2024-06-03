@@ -64,5 +64,6 @@ export const getBarangHandler = async (toko_id, barang_id) => {
         return response.data;
     } catch (error) {
         console.error(error);
+        return false;
     }
 }
