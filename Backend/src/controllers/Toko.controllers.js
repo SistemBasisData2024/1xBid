@@ -53,3 +53,12 @@ exports.deleteBarang = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 }
+
+exports.getBarangById = async (req, res) => {
+    try {
+        const response = await tokoServices.getBarangById(req.params);
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(400).json({ message: err.message });
+    }
+}

@@ -125,7 +125,7 @@ const ProfilePage = () => {
             type="submit"
             onClick={() => {
               if (toko.toko_id) {
-                navigate(`/toko/${toko.toko_id}`);
+                navigate(`/${toko.toko_id}`);
               } else {
                 setModalOpen(true);
               }
