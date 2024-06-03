@@ -9,11 +9,24 @@ import {
     CardTitle,
     CardContent,
 } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TimeInput } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { getTokoHandler } from "@/api/toko.handler";
+import { toast } from "react-toastify";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const TokoDetails = () => {
     const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -28,10 +41,27 @@ const TokoDetails = () => {
         harga_awal: "",
         kategori: "",
         deskripsi: "",
-        start_time: "",
-        end_time: "",
+        start_time: null,
+        end_time: null,
         bid_multiplier: ""
     });
+
+    const { toko_id } = useParams();
+    const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     const fetchToko = async () => {
+    //         const response = await getTokoHandler(toko_id);
+    //         if (response) {
+    //             setToko(response);
+    //             setBarang(response.barang);
+    //         } else {
+    //             navigate("/notfound");
+    //         }
+    //     };
+
+    //     fetchToko();
+    // }, [toko_id]);
 
     const barang = [
         { barang_id: 1, nama_barang: "Barang 1", status: "Tersedia", kategori: "Makanan", harga_awal: "$150.00" },
@@ -46,6 +76,14 @@ const TokoDetails = () => {
     const handleProductChange = (e) => {
         const { name, value } = e.target;
         setNewProduct({ ...newProduct, [name]: value });
+    };
+
+    const handleStartTimeChange = (newValue) => {
+        setNewProduct({ ...newProduct, start_time: newValue });
+    };
+
+    const handleEndTimeChange = (newValue) => {
+        setNewProduct({ ...newProduct, end_time: newValue });
     };
 
     const handleEditSubmit = (e) => {
@@ -244,30 +282,36 @@ const TokoDetails = () => {
                                             required
                                         />
                                     </div>
-                                    <div>
-                                        <Label htmlFor="start_time">Start Time</Label>
-                                        <TimeInput
-                                            className="w-full p-2 border border-gray-300 rounded"
-                                            isRequired
-                                            name="start_time"
-                                            id="start_time"
-                                            label="Start Time"
-                                            value={newProduct.start_time}
-                                            onChange={(e) => setNewProduct({ ...newProduct, start_time: e.target.value })}
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="end_time">End Time</Label>
-                                        <TimeInput
-                                            className="w-full p-2 border border-gray-300 rounded"
-                                            isRequired
-                                            name="end_time"
-                                            id="end_time"
-                                            label="End Time"
-                                            value={newProduct.end_time}
-                                            onChange={(e) => setNewProduct({ ...newProduct, end_time: e.target.value })}
-                                        />
-                                    </div>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <div>
+                                            <Label htmlFor="start_time">Start Time  </Label>
+                                            <DateTimePicker
+                                                label="Start Time"
+                                                value={newProduct.start_time}
+                                                onChange={handleStartTimeChange}
+                                                renderInput={(props) => (
+                                                    <div className="flex flex-col">
+                                                        <Input {...props} name="start_time" id="start_time" />
+                                                    </div>
+                                                )}
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="end_time">End Time  </Label>
+                                            <DateTimePicker
+                                                label="End Time"
+                                                value={newProduct.end_time}
+                                                onChange={handleEndTimeChange}
+                                                renderInput={(props) => (
+                                                    <div className="flex flex-col">
+                                                        <Input {...props} name="end_time" id="end_time" />
+                                                    </div>
+                                                )}
+                                                required
+                                            />
+                                        </div>
+                                    </LocalizationProvider>
                                     <div>
                                         <Label htmlFor="bid_multiplier">Bid Multiplier</Label>
                                         <Input
