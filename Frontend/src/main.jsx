@@ -42,10 +42,6 @@ const router = createBrowserRouter([
     element: <Logout />,
   },
   {
-    path: "/toko/:toko_id",
-    element: <TokoDetails />,
-  },
-  {
     path: "/editshop",
     element: <EditShop />,
   },
@@ -66,12 +62,16 @@ const router = createBrowserRouter([
     element: <NotFound />,
   },
   {
-    path: "*",
-    element: <NotFound />,
+    path: "/:toko_id",
+    element: <TokoDetails />,
   },
   {
-    path: "/product",
+    path: "/:toko_id/:barang_id",
     element: <Product />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

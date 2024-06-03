@@ -26,7 +26,7 @@ const NotFound = () => {
         </CardContent>
         <CardFooter className="flex justify-center">
           <Link to="/">
-            <Button className="mt-4" variant="primary" onclick={() => navigate("/")}>
+            <Button className="mt-4" variant="primary" onClick={() => navigate("/")}>
               Go Home
             </Button>
           </Link>

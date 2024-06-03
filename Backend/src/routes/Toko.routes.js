@@ -11,4 +11,6 @@ router.post('/:toko_id/add-barang', authMiddlewares.authenticate, tokoMiddleware
 router.put('/:toko_id/:barang_id', authMiddlewares.authenticate, tokoMiddlewares.isTokoOwner, tokoController.editBarang);
 router.delete('/:toko_id/:barang_id', authMiddlewares.authenticate, tokoMiddlewares.isTokoOwner, tokoController.deleteBarang);
 
+router.get('/:toko_id/:barang_id', tokoController.getBarangById);
+
 module.exports = router;
