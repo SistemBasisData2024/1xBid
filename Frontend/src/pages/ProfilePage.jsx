@@ -124,7 +124,7 @@ const ProfilePage = () => {
           <button
             type="submit"
             onClick={() => {
-              if (toko.toko_id) {
+              if (toko?.toko_id) {
                 navigate(`/${toko.toko_id}`);
               } else {
                 setModalOpen(true);
@@ -132,7 +132,7 @@ const ProfilePage = () => {
             }}
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
           >
-            {toko.toko_id ? "My Toko" : "Open Toko"}
+            {toko?.toko_id ? "My Toko" : "Open Toko"}
           </button>
         </div>
       </div>

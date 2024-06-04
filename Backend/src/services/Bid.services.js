@@ -13,6 +13,8 @@ exports.placeBid = async (user_id, params, body) => {
 
         const response = await pool.query('INSERT INTO historybid (barang_id, user_id, bid_price) VALUES ($1, $2, $3) RETURNING *', [barang_id, user_id, last_price]);
         const updateBarang = await pool.query('UPDATE barang SET last_price = $1 WHERE barang_id = $2 and status = $3 RETURNING *', [last_price, barang_id, 'On Bid']);
+        if(response.rows.length === 0) throw new Error('Failed to place bid');
+        if(updateBarang.rows.length === 0) throw new Error('Failed to update barang');
         return { message: 'Place bid successfully', bidData: response.rows[0], data: updateBarang.rows[0] }
     } catch (error) {
         return { message: error.message }
@@ -23,7 +25,19 @@ exports.getBidHistory = async (params) => {
     try {
         const { barang_id } = params;
         const response = await pool.query('SELECT * FROM historybid WHERE barang_id = $1', [barang_id]);
+        if(response.rows.length === 0) throw new Error('No bid history found');
         return { message: 'Get bid history successfully', data: response.rows }
+    } catch (error) {
+        return { message: error.message }
+    }
+}
+
+exports.getBarang = async (params) => {
+    try {
+        const {barang_id} = params;
+        const response = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [barang_id]);
+        if(response.rows.length === 0) throw new Error('Barang not found');
+        return { message: 'Get barang successfully', data: response.rows[0] }
     } catch (error) {
         return { message: error.message }
     }

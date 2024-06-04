@@ -67,7 +67,7 @@ exports.createBarang = async (params, body) => {
 
         validateTime(start_time_date, end_time_date);
         
-        const response = await pool.query('INSERT INTO barang (nama_barang, deskripsi, harga_awal, start_time, end_time, kategori, bid_multiplier, status, toko_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *', [nama_barang, deskripsi, harga_awal, start_time_date, end_time_date, kategori, bid_multiplier, status, toko_id]);
+        const response = await pool.query('INSERT INTO barang (nama_barang, deskripsi, harga_awal, start_time, end_time, kategori, bid_multiplier, status, toko_id, last_price) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', [nama_barang, deskripsi, harga_awal, start_time_date, end_time_date, kategori, bid_multiplier, status, toko_id, harga_awal]);
         if (response.rows.length === 0) throw new Error('Failed to create barang');
 
         const barangTokoResponse = await pool.query('INSERT INTO barangToko (barang_id, toko_id) VALUES ($1, $2) RETURNING *', [response.rows[0].barang_id, toko_id]);
