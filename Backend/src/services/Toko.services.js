@@ -51,8 +51,23 @@ exports.createBarang = async (params, body) => {
         const { toko_id } = params;
         if (!nama_barang || !deskripsi || !harga_awal || !start_time || !end_time || !kategori || !bid_multiplier) throw new Error('Missing required field');
 
+        const validateTime = (start_time, end_time) => {
+            if (new Date(start_time) < new Date()) throw new Error('Start time must be greater than current time');
+            if (new Date(end_time) < new Date(start_time)) throw new Error('End time must be greater than start time');
+
+            if (new Date(start_time) - new Date() < process.env.START_TIME_MIN) throw new Error('Start time must be at least 5 hours from current time');
+            if (new Date(end_time) - new Date() < process.env.END_TIME_MIN) throw new Error('End time must be at least 1 hour from current time');
+
+            return true;
+        }
+
         const status = 'Not Available';
-        const response = await pool.query('INSERT INTO barang (nama_barang, deskripsi, harga_awal, start_time, end_time, kategori, bid_multiplier, status, toko_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *', [nama_barang, deskripsi, harga_awal, start_time, end_time, kategori, bid_multiplier, status, toko_id]);
+        const start_time_date = new Date(start_time);
+        const end_time_date = new Date(end_time);
+
+        validateTime(start_time_date, end_time_date);
+        
+        const response = await pool.query('INSERT INTO barang (nama_barang, deskripsi, harga_awal, start_time, end_time, kategori, bid_multiplier, status, toko_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *', [nama_barang, deskripsi, harga_awal, start_time_date, end_time_date, kategori, bid_multiplier, status, toko_id]);
         if (response.rows.length === 0) throw new Error('Failed to create barang');
 
         const barangTokoResponse = await pool.query('INSERT INTO barangToko (barang_id, toko_id) VALUES ($1, $2) RETURNING *', [response.rows[0].barang_id, toko_id]);
@@ -60,6 +75,7 @@ exports.createBarang = async (params, body) => {
 
         return { message: 'Create barang successfully', data: response.rows[0] }
     } catch (error) {
+        console.log(error.message);
         return { message: error.message }
     }
 }
