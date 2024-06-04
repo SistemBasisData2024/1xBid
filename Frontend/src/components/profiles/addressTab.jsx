@@ -1,5 +1,5 @@
 import { addAddressHandler, editAddressHandler } from "@/api/user.handler";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -81,6 +81,24 @@ const AddressTab = ({ address }) => {
     }
   };
 
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        setAddressModalOpen(false);
+      }
+    };
+
+    if (isAddressModalOpen) {
+      window.addEventListener("keydown", handleEsc);
+    } else {
+      window.removeEventListener("keydown", handleEsc);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [isAddressModalOpen]);
+
   return (
     <Card className="p-6 shadow-lg rounded-lg bg-white">
       <div>
@@ -159,19 +177,19 @@ const AddressTab = ({ address }) => {
                   />
                 </label>
                 <div className="flex justify-end mt-4">
-                  <button
+                  <Button
                     type="submit"
-                    className="py-2 px-4 bg-blue-500 text-white rounded"
+                    className="py-2 px-4 text-white rounded"
                   >
                     Save
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
                     onClick={() => setAddressModalOpen(false)}
-                    className="ml-2 py-2 px-4 bg-gray-500 text-white rounded"
+                    className="ml-2 py-2 px-4 text-white rounded"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

@@ -83,8 +83,11 @@ const ProfilePage = () => {
   const handleAddTokoSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await openTokoHandler(editData.nama_toko, editData.deskripsi);
-      if(response) {
+      const response = await openTokoHandler(
+        editData.nama_toko,
+        editData.deskripsi
+      );
+      if (response) {
         toast.success("Toko berhasil dibuat");
         setTokos(response);
         setModalOpen(false);
