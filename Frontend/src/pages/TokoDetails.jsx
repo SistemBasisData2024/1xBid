@@ -20,7 +20,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TimeInput } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
@@ -46,8 +45,8 @@ const TokoDetails = () => {
         harga_awal: "",
         kategori: "",
         deskripsi: "",
-        start_time: "",
-        end_time: "",
+        start_time: "null",
+        end_time: "null",
         bid_multiplier: "",
     });
 
@@ -66,6 +65,8 @@ const TokoDetails = () => {
     const { toko_id } = useParams();
     const [barang, setBarang] = useState([]);
     const navigate = useNavigate();
+    const START_TIME_MIN = import.meta.env.START_TIME_MIN;
+    const END_TIME_MIN = import.meta.env.END_TIME_MIN;
 
     useEffect(() => {
         const fetchToko = async () => {
@@ -93,15 +94,27 @@ const TokoDetails = () => {
 
     const handleStartTimeChange = (newValue) => {
         setNewProduct({ ...newProduct, start_time: newValue });
+        if (newValue === null) toast.error("Start time is required");
     };
 
     const handleEndTimeChange = (newValue) => {
         setNewProduct({ ...newProduct, end_time: newValue });
+        if (newValue === null) toast.error("End time is required");
     };
 
     const handleProductChange = (e) => {
         const { name, value } = e.target;
         setNewProduct({ ...newProduct, [name]: value });
+
+        if (name === "harga_awal" || name === "bid_multiplier") {
+            if (value) {
+                const newValue = parseInt(value.replace(/\D/g, ""));
+                setNewProduct({
+                    ...newProduct,
+                    [name]: `Rp ${newValue.toLocaleString("id-ID")}`,
+                });
+                }
+            }
     };
 
     const handleEditSubmit = async (e) => {
