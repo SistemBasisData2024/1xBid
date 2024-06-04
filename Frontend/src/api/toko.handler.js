@@ -32,7 +32,8 @@ export const deleteTokoHandler = async (toko_id) => {
 
 export const addBarangHandler = async (toko_id, body) => {
     try {
-        const response = await axios.post(BE_URL + '/toko/' + toko_id + '/add-barang', body);
+        const response = await axios.post(BE_URL + '/toko/' + toko_id + '/add-barang', body, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error(error);
