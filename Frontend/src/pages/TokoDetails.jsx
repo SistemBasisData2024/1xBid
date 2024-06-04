@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { PlusCircle, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 const TokoDetails = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
+  const [isEditProductModalOpen, setEditProductModalOpen] = useState(false);
   const [editData, setEditData] = useState({
     nama_toko: "Toko Sukses",
     deskripsi: "Toko yang menjual berbagai macam barang berkualitas.",
@@ -50,6 +51,8 @@ const TokoDetails = () => {
     end_time: null,
     bid_multiplier: "",
   });
+
+  const escKeyListener = useRef(null);
 
   const getAvatar = async (fullname) => {
     if (fullname) {
@@ -86,6 +89,19 @@ const TokoDetails = () => {
       }
     };
     fetchToko();
+
+    escKeyListener.current = (e) => {
+      if (e.key === "Escape") {
+        setEditModalOpen(false);
+        setAddProductModalOpen(false);
+        setEditProductModalOpen(false);
+      }
+    };
+    document.addEventListener("keydown", escKeyListener.current);
+
+    return () => {
+      document.removeEventListener("keydown", escKeyListener.current);
+    };
   }, [toko_id]);
 
   const handleEditChange = (e) => {
@@ -161,7 +177,7 @@ const TokoDetails = () => {
 
     newProduct.harga_awal = parseBackPrice(newProduct.harga_awal);
     newProduct.bid_multiplier = parseBackPrice(newProduct.bid_multiplier);
-    
+
     const timeError = validateTime(newProduct.start_time, newProduct.end_time);
     if (timeError) {
       toast.error(timeError);
@@ -176,6 +192,10 @@ const TokoDetails = () => {
       toast.error("Failed to add product");
     }
     setAddProductModalOpen(false);
+  };
+
+  const handleEditBarang = (barang) => {
+    setNewProduct(barang);
   };
 
   return (
@@ -233,10 +253,10 @@ const TokoDetails = () => {
                   <TableBody>
                     {barang.map((item) => (
                       <TableRow
-                        key={item.barang_id}
-                        onClick={() =>
-                          navigate(`/${toko_id}/${item.barang_id}`)
-                        }
+                      // key={item.barang_id}
+                      // onClick={() =>
+                      //   navigate(`/${toko_id}/${item.barang_id}`)
+                      // }
                       >
                         <TableCell>{item.nama_barang}</TableCell>
                         <TableCell>
@@ -255,6 +275,18 @@ const TokoDetails = () => {
                         <TableCell>{`Rp ${item.bid_multiplier.toLocaleString(
                           "id-ID"
                         )},00`}</TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setEditProductModalOpen(item);
+                              handleEditBarang(item);
+                            }}
+                          >
+                            Edit
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -439,6 +471,135 @@ const TokoDetails = () => {
                   </div>
                   <Button type="submit" className="w-full">
                     Add Product
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+      )}
+
+      {/* Modal Edit Product */}
+      {isEditProductModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <section className="min-h-screen flex items-center justify-center">
+            <Card className="mx-auto max-w-md">
+              <CardHeader>
+                <CardTitle className="text-xl">Edit Product</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="space-y-4" onSubmit={handleProductSubmit}>
+                  <div>
+                    <Label htmlFor="nama_barang">Nama Barang</Label>
+                    <Input
+                      type="text"
+                      name="nama_barang"
+                      id="nama_barang"
+                      value={newProduct.nama_barang}
+                      onChange={handleProductChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="harga_awal">Harga Awal</Label>
+                    <Input
+                      type="text"
+                      name="harga_awal"
+                      id="harga_awal"
+                      value={newProduct.harga_awal}
+                      onChange={handleProductChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="kategori">Kategori</Label>
+                    <select
+                      name="kategori"
+                      id="kategori"
+                      value={newProduct.kategori}
+                      onChange={handleProductChange}
+                      className="w-full p-2 border border-gray-300 rounded"
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      <option value="Elektronik">Elektronik</option>
+                      <option value="Fashion">Fashion</option>
+                      <option value="Otomotif">Otomotif</option>
+                      <option value="Perhiasaan dan Aksesoris">
+                        Perhiasaan dan Aksesoris
+                      </option>
+                      <option value="Mainan dan Hobi">Mainan dan Hobi</option>
+                      <option value="Alat Musik">Alat Musik</option>
+                      <option value="Barang Antik">Barang Antik</option>
+                      <option value="Seni">Seni</option>
+                      <option value="Budak">Budak</option>
+                      <option value="Barang lainnya">Barang lainnya</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor="deskripsi">Deskripsi</Label>
+                    <textarea
+                      name="deskripsi"
+                      id="deskripsi"
+                      value={newProduct.deskripsi}
+                      onChange={handleProductChange}
+                      className="w-full p-2 border border-gray-300 rounded"
+                      required
+                    />
+                  </div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <div className="flex flex-col">
+                      <Label htmlFor="start_time">Start Time</Label>
+                      <DateTimePicker
+                        label="Start Time"
+                        // value={newProduct.start_time}
+                        onChange={handleStartTimeChange}
+                        renderInput={(props) => (
+                          <div className="flex flex-col">
+                            <Input
+                              {...props}
+                              name="start_time"
+                              id="start_time"
+                              className="rounded"
+                            />
+                          </div>
+                        )}
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <Label htmlFor="end_time">End Time</Label>
+                      <DateTimePicker
+                        label="End Time"
+                        // value={newProduct.end_time}
+                        onChange={handleEndTimeChange}
+                        renderInput={(props) => (
+                          <div className="flex flex-col">
+                            <Input
+                              {...props}
+                              name="end_time"
+                              id="end_time"
+                              className="rounded"
+                            />
+                          </div>
+                        )}
+                        required
+                      />
+                    </div>
+                  </LocalizationProvider>
+                  <div>
+                    <Label htmlFor="bid_multiplier">Bid Multiplier</Label>
+                    <Input
+                      type="text"
+                      name="bid_multiplier"
+                      id="bid_multiplier"
+                      value={newProduct.bid_multiplier}
+                      onChange={handleProductChange}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Edit Product
                   </Button>
                 </form>
               </CardContent>

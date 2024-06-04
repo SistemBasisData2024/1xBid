@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { updateUserHandler } from "@/api/user.handler";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -33,6 +33,24 @@ const ProfileTab = ({ user }) => {
       toast.error("Failed to update user");
     }
   };
+
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        setIsModalOpen(false);
+      }
+    };
+
+    if (isModalOpen) {
+      window.addEventListener("keydown", handleEsc);
+    } else {
+      window.removeEventListener("keydown", handleEsc);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEsc);
+    };
+  }, [isModalOpen]);
 
   return (
     <Card className="p-6 shadow-lg rounded-lg bg-white">
@@ -150,19 +168,19 @@ const ProfileTab = ({ user }) => {
                 <div className="flex justify-end mt-4">
                   <Button
                     onClick={() => setIsModalOpen(true)}
-                    className="mt-2"
+                    className="mt-2 mr-2"
                     color="blue"
                     rounded
                   >
                     Save
                   </Button>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="ml-2 py-2 px-4 bg-gray-500 text-white rounded"
+                    className="mt-2"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
