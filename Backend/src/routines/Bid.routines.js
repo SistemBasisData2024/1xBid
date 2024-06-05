@@ -17,9 +17,12 @@ exports.bidWinner = async () => {
         for(let i = 0; i < response.rows.length; i++) {
             const bidHistory = await pool.query('SELECT * FROM historybid WHERE barang_id = $1 ORDER BY bid_price DESC', [response.rows[i].barang_id]);
             if(bidHistory.rows.length > 0) {
+                const checkTransaksi = await pool.query('SELECT * FROM transaksi WHERE barang_id = $1', [response.rows[i].barang_id]);
+                if(checkTransaksi.rows.length > 0) continue;
+
                 const winner = await pool.query('SELECT * FROM users WHERE user_id = $1', [bidHistory.rows[0].user_id]);
                 const updateBarang = await pool.query('UPDATE barang SET status = $1, winner_id = $2 WHERE barang_id = $3 RETURNING *', ['Sold', winner.rows[0].user_id, response.rows[i].barang_id]);                
-                const makeTransaksi = await pool.query('INSERT INTO transaksi (barang_id, user_id, toko_id, price) VALUES ($1, $2, $3, $4) RETURNING *', [response.rows[i].barang_id, winner.rows[0].user_id, response.rows[i].toko_id, bidHistory.rows[0].bid_price]);
+                const makeTransaksi = await pool.query('INSERT INTO transaksi (barang_id, user_id, toko_id, price, payment_option) VALUES ($1, $2, $3, $4, $5) RETURNING *', [response.rows[i].barang_id, winner.rows[0].user_id, response.rows[i].toko_id, bidHistory.rows[0].bid_price, 'Saldo']);
             } else {
                 const updateBarang = await pool.query('UPDATE barang SET status = $1 WHERE barang_id = $2 RETURNING *', ['Available', response.rows[i].barang_id]);
             }
