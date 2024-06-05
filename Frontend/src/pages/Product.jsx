@@ -37,6 +37,7 @@ const Product = () => {
   const [timeLeft, setTimeLeft] = useState({});
   const [progress, setProgress] = useState(100);
   const [product, setProduct] = useState({});
+  const [text, setText] = useState("");
   const navigate = useNavigate();
 
   const fetchProduct = async () => {
@@ -54,16 +55,28 @@ const Product = () => {
   }, [toko_id, barang_id]);
 
   useEffect(() => {
-    if (product.end_time) {
-      const auctionDuration = new Date(product.end_time) - new Date(product.start_time);
-      const timer = setTimeout(() => {
-        setTimeLeft(calculateTimeLeft(product.end_time));
-        setProgress(calculateProgress(product.end_time, auctionDuration));
+    if (product.start_time && product.end_time) {
+      const now = new Date();
+      const startTime = new Date(product.start_time);
+      const endTime = new Date(product.end_time);
+      let targetTime = startTime;
+      let text = "Auction starts in";
+
+      if (now > startTime) {
+        targetTime = endTime;
+        text = "Auction ends in";
+      }
+
+      const auctionDuration = targetTime - startTime;
+      const timer = setInterval(() => {
+        setTimeLeft(calculateTimeLeft(targetTime));
+        setProgress(calculateProgress(targetTime, auctionDuration));
+        setText(text);
       }, 1000);
 
-      return () => clearTimeout(timer);
+      return () => clearInterval(timer);
     }
-  }, [product]);
+  }, [product, timeLeft]);
 
   const timerComponents = [];
 
@@ -90,26 +103,31 @@ const Product = () => {
           />
         </CardHeader>
         <CardContent className="flex-grow p-6">
-          <h1 className="text-2xl font-bold mb-2">{product.nama_barang || "Product Name"}</h1>
+          <h1 className="text-2xl font-bold mb-2">
+            {product.nama_barang || "Product Name"}
+          </h1>
           <Separator className="my-2" />
-          <a
-            href={`/shop/${product.toko_id}`}
-            className="text-blue-500 underline"
-          >
-            {product.toko_name || "Shop Name"}
+          <a href={`/${product.toko_id}`} className="text-blue-500 underline">
+            {product.toko_id || "Shop Name"}
           </a>
           <Separator className="my-2" />
-          <p className="text-lg text-blue-600 mb-4">{product.last_price ? `$${product.last_price}` : "Price"}</p>
+          <p className="text-lg text-blue-600 mb-4">
+            {product.last_price
+              ? `Rp ${product.last_price.toLocaleString("id-ID")},00`
+              : "Price"}
+          </p>
           <Separator className="my-2" />
           <p className="mb-4">{product.deskripsi || "Product description"}</p>
           <Separator className="my-2" />
           <div className="mt-4">
             {timerComponents.length ? (
               <div className="text-xl font-bold">
-                Auction ends in: {timerComponents}
+                {text}: {timerComponents}
               </div>
             ) : (
-              <span className="text-xl font-bold">Auction has ended!</span>
+              <span className="text-xl font-bold">
+                Auction has <span className="text-red-600">ended!</span>
+              </span>
             )}
           </div>
           <Progress value={progress} className="mt-4" />
@@ -117,7 +135,15 @@ const Product = () => {
       </div>
       <Separator className="my-2" />
       <CardFooter className="p-6">
-        <Button className="w-full bg-green-500 text-white">Buy Now</Button>
+        <Button
+          className={`w-full text-white ${
+            Object.keys(timeLeft).length ? "bg-green-500" : "bg-gray-500"
+          }`}
+          disabled={!Object.keys(timeLeft).length}
+          onClick={() => navigate(`/onbid/${barang_id}`)}
+        >
+          Buy Now
+        </Button>{" "}
       </CardFooter>
     </Card>
   );

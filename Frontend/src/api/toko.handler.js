@@ -61,8 +61,7 @@ export const deleteBarangHandler = async (toko_id, barang_id) => {
 export const getBarangHandler = async (toko_id, barang_id) => {
     try {
         const response = await axios.get(BE_URL + '/toko/' + toko_id + '/' + barang_id);
-        console.log(response.data);
-        return response.data;
+        return response.data.data
     } catch (error) {
         console.error(error);
         return false;

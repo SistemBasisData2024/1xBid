@@ -17,3 +17,12 @@ exports.getBidHistory = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 }
+
+exports.getBarang = async (req, res) => {
+    try {
+        const response = await bidServices.getBarang(req.params);
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+}

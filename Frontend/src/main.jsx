@@ -55,7 +55,7 @@ const router = createBrowserRouter([
     element: <Payment />,
   },
   {
-    path: "/onbid",
+    path: "/onbid/:barang_id",
     element: <OnBid />,
   },
   {
