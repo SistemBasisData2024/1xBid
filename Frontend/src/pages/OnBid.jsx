@@ -51,8 +51,8 @@ const OnBid = () => {
     const response = await getBarang(barang_id);
     if (response) {
       setBarang(response.data);
-      setLatestPrice(response.data.last_price.toLocaleString("id-ID"));
-      setInitialPrice(response.data.harga_awal.toLocaleString("id-ID"));
+      setLatestPrice(response.data.last_price ? response.data.last_price.toLocaleString("id-ID") : "");
+      setInitialPrice(response.data.harga_awal ? response.data.harga_awal.toLocaleString("id-ID") : "");
     } else {
       toast.error("Failed to fetch product");
       navigate("/notfound");
