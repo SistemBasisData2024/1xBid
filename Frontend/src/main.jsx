@@ -19,6 +19,7 @@ import Payment from "./pages/Payment";
 import OnBid from "./pages/OnBid";
 import NotFound from "./pages/PageNotFound";
 import Product from "./pages/Product";
+import Search from "./pages/Search";
 
 const router = createBrowserRouter([
   {
@@ -62,7 +63,7 @@ const router = createBrowserRouter([
     element: <NotFound />,
   },
   {
-    path: "/:toko_id",
+    path: "/toko/:toko_id",
     element: <TokoDetails />,
   },
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
     path: "*",
     element: <NotFound />,
   },
+  {
+    path: "/search/:searchQuery", 
+    element: <Search />,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
