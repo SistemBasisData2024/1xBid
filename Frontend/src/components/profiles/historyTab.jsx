@@ -6,6 +6,14 @@ import {
   TableCell,
   TableBody,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const HistoryTab = () => {
@@ -57,6 +65,26 @@ const HistoryTab = () => {
                 <TableCell>{transaction.itemName}</TableCell>
                 <TableCell>{transaction.amount}</TableCell>
                 <TableCell>{transaction.shopName}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <span className="material-icons hover:bg-gray-100 hover:shadow-lg hover:cursor-pointer p-2 rounded-lg">
+                        more_vert
+                      </span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setEditProductModalOpen(item);
+                          handleEditBarang(item);
+                        }}
+                      >
+                        Details
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
