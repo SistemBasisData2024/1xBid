@@ -6,9 +6,10 @@ const tokoRoutes = require('./src/routes/Toko.routes');
 const userRoutes = require('./src/routes/User.routes');
 const homeRoutes = require('./src/routes/Home.routes');
 const bidRoutes = require('./src/routes/Bid.routes');
+const transaksiRoutes = require('./src/routes/Transaksi.routes');
 const utils = require('./src/utils/Auth.utils');
 const { pool } = require('./src/config/db.config');
-const { updateStatus, bidWinner } = require('./src/routines/Bid.routines');
+const { updateStatus, bidWinner, checkTransaksiTimeout } = require('./src/routines/Bid.routines');
 
 dotenv.config();
 const app = express();
@@ -32,12 +33,14 @@ app.use('/toko', tokoRoutes);
 app.use('/user', userRoutes);
 app.use('/home', homeRoutes);
 app.use('/bid', bidRoutes);
+app.use('/transaksi', transaksiRoutes);
 
 // interval every 5 minutes
 setInterval(utils.keepDBAlive, 1000*60*5);
 setInterval(() => {
    updateStatus();
-   bidWinner(); 
+   bidWinner();
+   checkTransaksiTimeout();
 }, 1000);
 
 app.listen(process.env.PORT, () => {

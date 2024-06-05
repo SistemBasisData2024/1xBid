@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CreditCard, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate, useParams } from "react-router-dom";
+import { getTransaksiDetailHandler } from "@/api/transaksi.handler";
+import { toast } from "react-toastify";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -20,11 +23,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const Payment = () => {
-    const currentDate = new Date().toLocaleDateString("en-US", {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+  const { transaksi_id } = useParams();
+  const [transaksi, setTransaksi] = useState({});
+
+  const navigate = useNavigate();
+
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
     const pembeli = {
         nama: "Nama Panjang Banget",
