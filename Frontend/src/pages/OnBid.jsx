@@ -27,6 +27,8 @@ const OnBid = () => {
   const { barang_id } = useParams();
   const [bidder, setBidder] = useState([]);
   const [barang, setBarang] = useState({});
+  const [latestPrice, setLatestPrice] = useState("");
+  const [initialPrice, setInitialPrice] = useState("");
   const navigate = useNavigate();
 
   const pembeli = [
@@ -53,19 +55,12 @@ const OnBid = () => {
     },
   ];
 
-  //   const barang = {
-  //     nama_barang: "Barang 1",
-  //     harga_awal: "$100.00",
-  //     deskripsi:
-  //       "Barang keren banget inimah wajib dibeli cok yang ga beli pasti nyesel dah",
-  //     bid_multiplier: "x1.5",
-  //   };
-
-  const endTime = new Date("2024-06-05T12:00:00");
+  // const endTime = new Date("2024-06-05T12:00:00");
 
   const calculateTimeLeft = (endTime) => {
     const now = new Date();
-    const distance = endTime - now;
+    const distance = new Date(endTime) - now;
+    if (distance <= 0) return {};
 
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
@@ -77,10 +72,26 @@ const OnBid = () => {
     return { days, hours, minutes, seconds };
   };
 
+  // const calculateTimeLeft = (endTime) => {
+  //   const now = new Date();
+  //   const distance = endTime - now;
+
+  //   const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  //   const hours = Math.floor(
+  //     (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  //   );
+  //   const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  //   const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  //   return { days, hours, minutes, seconds };
+  // };
+
   const fetchBarang = async () => {
     const response = await getBarang(barang_id);
     if (response) {
       setBarang(response.data);
+      setLatestPrice(response.data.last_price.toLocaleString("id-ID"));
+      setInitialPrice(response.data.harga_awal.toLocaleString("id-ID"));
     } else {
       toast.error("Failed to fetch product");
       navigate("/notfound");
@@ -90,7 +101,7 @@ const OnBid = () => {
   const fetchBidHistory = async () => {
     const response = await getBidHistory(barang_id);
     if (response) {
-      setBidder(response);
+      setBidder(response.bidder.sort((a, b) => b.bid_price - a.bid_price));
     } else {
       toast.error("Failed to fetch bid history");
     }
@@ -103,23 +114,17 @@ const OnBid = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const timeLeft = calculateTimeLeft(endTime);
+      const timeleft = calculateTimeLeft(barang.end_time);
+      setTimeLeft(timeleft);
 
-      setTimeLeft(timeLeft);
-
-      if (
-        timeLeft.days <= 0 &&
-        timeLeft.hours <= 0 &&
-        timeLeft.minutes <= 0 &&
-        timeLeft.seconds <= 0
-      ) {
+      if(!timeleft) {
         clearInterval(interval);
         setTimeLeft({});
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  });
 
   const handleBidPriceChange = (e) => {
     const value = Number(e.target.value.replace(/[^0-9]/g, ""));
@@ -134,6 +139,20 @@ const OnBid = () => {
     } else {
       toast.error("Failed to place bid");
     }
+  };
+
+  const censorEmail = (email) => {
+    let [username, domain] = email.split("@");
+    username = username[0] + "*".repeat(username.length - 1);
+    domain = domain[0] + "*".repeat(domain.length - 1);
+    return `${username}@${domain}`;
+  };
+
+  const censorName = (name) => {
+    return name
+      .split(" ")
+      .map((word) => word[0] + "*".repeat(word.slice(1).length))
+      .join(" ");
   };
 
   return (
@@ -160,7 +179,7 @@ const OnBid = () => {
         <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
           <CardHeader className="pb-2">
             <CardDescription>Starting Price</CardDescription>
-            <CardTitle className="text-4xl">{barang.harga_awal}</CardTitle>
+            <CardTitle className="text-4xl">{`Rp ${initialPrice}`}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
@@ -171,7 +190,7 @@ const OnBid = () => {
         <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
           <CardHeader className="pb-2">
             <CardDescription>Latest Price</CardDescription>
-            <CardTitle className="text-4xl">$450.00</CardTitle>
+            <CardTitle className="text-4xl">{`Rp ${latestPrice}`}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-xs text-muted-foreground">
@@ -232,21 +251,25 @@ const OnBid = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pembeli.map((item) => (
+              {bidder.map((item, index) => (
                 <TableRow
-                  key={item.pembeli_id}
-                  className={item.pembeli_id % 2 === 0 ? "bg-accent" : ""}
+                  key={index}
+                  className={index % 2 === 0 ? "bg-accent" : ""}
                 >
                   <TableCell>
-                    <div className="font-medium">{item.nama}</div>
+                    <div className="font-medium">
+                      {censorName(item.fullname)}
+                    </div>
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    {item.email}
+                    {censorEmail(item.email)}
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    {item.timestamp}
+                    {new Date(item.bid_at).toLocaleString()}
                   </TableCell>
-                  <TableCell className="text-right">{item.bid}</TableCell>
+                  <TableCell className="text-right">{`Rp ${item.bid_price.toLocaleString(
+                    "id-ID"
+                  )}`}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

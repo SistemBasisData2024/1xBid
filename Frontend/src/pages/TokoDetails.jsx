@@ -253,10 +253,10 @@ const TokoDetails = () => {
                   <TableBody>
                     {barang.map((item) => (
                       <TableRow
-                      // key={item.barang_id}
-                      // onClick={() =>
-                      //   navigate(`/${toko_id}/${item.barang_id}`)
-                      // }
+                        key={item.barang_id}
+                        onClick={() =>
+                          navigate(`/${toko_id}/${item.barang_id}`)
+                        }
                       >
                         <TableCell>{item.nama_barang}</TableCell>
                         <TableCell>
@@ -279,7 +279,8 @@ const TokoDetails = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => {
+                            onClick={(event) => {
+                              event.stopPropagation();
                               setEditProductModalOpen(item);
                               handleEditBarang(item);
                             }}
