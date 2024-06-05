@@ -29,19 +29,22 @@ exports.getTransaksiDetail = async (user_id, params) => {
         const response = await pool.query('SELECT * FROM transaksi WHERE transaksi_id = $1 AND user_id = $2', [transaksi_id, user_id]);
         if (response.rows.length === 0) throw new Error('Transaksi not found');
 
-        // populate barang and user data
         const barang = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [response.rows[0].barang_id]);
         if (barang.rows.length === 0) throw new Error('Barang not found');
         const user = await pool.query('SELECT * FROM users WHERE user_id = $1', [response.rows[0].user_id]);
         if (user.rows.length === 0) throw new Error('User not found');
-        const pembeli = { nama: user.rows[0].full_name, email: user.rows[0].email, phone_number: user.rows[0].phone_number };
-        const toko = await pool.query('SELECT * FROM users WHERE user_id = $1', [response.rows[0].toko_id]);
+        const pembeli = { nama: user.rows[0].fullname, email: user.rows[0].email, phone_number: user.rows[0].phone_number, saldo: user.rows[0].saldo};
+        const toko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [response.rows[0].toko_id]);
         if (toko.rows.length === 0) throw new Error('Toko not found');
         const tokoData = { nama: toko.rows[0].nama_toko };
-        const address = await pool.query('SELECT * FROM address WHERE address_id = $1', [response.rows[0].address_id]);
-        if (address.rows.length === 0) throw new Error('Address not found');
+        
+        let address = null;
+        if (response.rows[0].address_id) {
+            const addressData = await pool.query('SELECT * FROM address WHERE address_id = $1', [response.rows[0].address_id]);
+            if (addressData.rows.length > 0) address = addressData.rows[0];
+        }
 
-        return { message: 'Transaksi detail', data: { barang: barang.rows[0], pembeli, toko: tokoData, address: address.rows[0], transaksi: response.rows[0] } }
+        return { message: 'Transaksi detail', data: { barang: barang.rows[0], pembeli, toko: tokoData, transaksi: response.rows[0], address } }
     } catch (error) {
         return { message: error.message }
     }
