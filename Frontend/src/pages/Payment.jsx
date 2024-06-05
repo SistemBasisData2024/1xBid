@@ -28,6 +28,21 @@ const Payment = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getTransaksiDetailHandler(transaksi_id);
+      if(response) {
+        setTransaksi(response.data);
+        console.log(response.data);
+      } else {
+        toast.error("Failed to fetch transaksi detail");
+        navigate("/notfound");
+      }
+    }
+
+    fetchData();
+  }, [transaksi_id]);
+
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -35,10 +50,10 @@ const Payment = () => {
   });
 
     const pembeli = {
-        nama: "Nama Panjang Banget",
-        email: "darren06nb@gmail.com",
-        phone_number: "0877123123",
-        saldo: "$1000.00",
+        nama: transaksi.pembeli?.nama,
+        email: transaksi.pembeli?.email,
+        phone_number: transaksi.pembeli?.phone_number,
+        saldo: transaksi.pembeli?.saldo,
         addresses: [
             {
                 address: "123 Main St",
