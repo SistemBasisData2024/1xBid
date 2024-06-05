@@ -17,6 +17,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -275,17 +291,55 @@ const TokoDetails = () => {
                           "id-ID"
                         )},00`}</TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              setEditProductModalOpen(item);
-                              handleEditBarang(item);
-                            }}
-                          >
-                            Edit
-                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <span className="material-icons hover:bg-gray-100 hover:shadow-lg hover:cursor-pointer p-2 rounded-lg">
+                                more_vert
+                              </span>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  setEditProductModalOpen(item);
+                                  handleEditBarang(item);
+                                }}
+                              >
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                }}
+                              >
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <span>Delete</span>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogTitle>Confirm deletion</DialogTitle>
+                                    <DialogDescription>
+                                      Are you sure you want to delete this
+                                      product?
+                                    </DialogDescription>
+                                    <DialogFooter>
+                                      <Button variant="outline">No</Button>
+                                      <Button
+                                        variant="destructive"
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          // Add your delete handler here
+                                          // deleteProductHandler(item.barang_id);
+                                        }}
+                                      >
+                                        Yes
+                                      </Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))}
