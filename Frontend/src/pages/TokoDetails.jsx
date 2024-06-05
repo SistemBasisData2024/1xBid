@@ -17,6 +17,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -174,8 +190,8 @@ const TokoDetails = () => {
   const handleProductSubmit = async (e) => {
     e.preventDefault();
 
-    // newProduct.harga_awal = parseBackPrice(newProduct.harga_awal);
-    // newProduct.bid_multiplier = parseBackPrice(newProduct.bid_multiplier);
+    newProduct.harga_awal = parseBackPrice(newProduct.harga_awal);
+    newProduct.bid_multiplier = parseBackPrice(newProduct.bid_multiplier);
 
     const timeError = validateTime(newProduct.start_time, newProduct.end_time);
     if (timeError) {
