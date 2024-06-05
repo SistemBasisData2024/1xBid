@@ -3,6 +3,7 @@ import { getUserHandler, openTokoHandler } from "@/api/user.handler";
 import ProfileTab from "@/components/profiles/profileTab";
 import AddressTab from "@/components/profiles/addressTab";
 import SaldoTab from "@/components/profiles/saldoTab";
+import HistoryTab from "@/components/profiles/historyTab"; // Import komponen baru
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -146,6 +147,10 @@ const ProfilePage = () => {
             <TabsTrigger value="profile">User Profile</TabsTrigger>
             <TabsTrigger value="address">Address</TabsTrigger>
             <TabsTrigger value="saldo">Saldo</TabsTrigger>
+            <TabsTrigger value="transactionHistory">
+              Transaction History
+            </TabsTrigger>{" "}
+            {/* Tambahkan tab baru */}
           </TabsList>
 
           <TabsContent value="profile">
@@ -158,6 +163,10 @@ const ProfilePage = () => {
 
           <TabsContent value="saldo">
             <SaldoTab user={user} />
+          </TabsContent>
+
+          <TabsContent value="transactionHistory">
+            <HistoryTab /> {/* Tambahkan konten tab baru */}
           </TabsContent>
         </Tabs>
       </div>

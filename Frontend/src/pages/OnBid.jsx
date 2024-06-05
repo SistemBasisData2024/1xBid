@@ -117,7 +117,7 @@ const OnBid = () => {
       const timeleft = calculateTimeLeft(barang.end_time);
       setTimeLeft(timeleft);
 
-      if(!timeleft) {
+      if (!timeleft) {
         clearInterval(interval);
         setTimeLeft({});
       }
