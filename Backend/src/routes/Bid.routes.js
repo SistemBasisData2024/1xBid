@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/place/:barang_id', authMiddleware.authenticate, bidController.placeBid);
 router.get('/history/:barang_id', bidController.getBidHistory);
+router.get('/:barang_id', bidController.getBarang);
 
 module.exports = router;
