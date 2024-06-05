@@ -29,33 +29,8 @@ const OnBid = () => {
   const [barang, setBarang] = useState({});
   const [latestPrice, setLatestPrice] = useState("");
   const [initialPrice, setInitialPrice] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-
-  const pembeli = [
-    {
-      pembeli_id: 1,
-      nama: "Nama Panjang 1",
-      email: "test1@mail.com",
-      bid: "$120.00",
-      timestamp: "2024-06-01 10:00:00",
-    },
-    {
-      pembeli_id: 2,
-      nama: "Nama Panjang 2",
-      email: "test2@mail.com",
-      bid: "$300.00",
-      timestamp: "2024-06-01 11:00:00",
-    },
-    {
-      pembeli_id: 3,
-      nama: "Nama Panjang 3",
-      email: "test3@mail.com",
-      bid: "$450.00",
-      timestamp: "2024-06-01 12:00:00",
-    },
-  ];
-
-  // const endTime = new Date("2024-06-05T12:00:00");
 
   const calculateTimeLeft = (endTime) => {
     const now = new Date();
@@ -71,20 +46,6 @@ const OnBid = () => {
 
     return { days, hours, minutes, seconds };
   };
-
-  // const calculateTimeLeft = (endTime) => {
-  //   const now = new Date();
-  //   const distance = endTime - now;
-
-  //   const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  //   const hours = Math.floor(
-  //     (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  //   );
-  //   const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  //   const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  //   return { days, hours, minutes, seconds };
-  // };
 
   const fetchBarang = async () => {
     const response = await getBarang(barang_id);
@@ -110,6 +71,8 @@ const OnBid = () => {
   useEffect(() => {
     fetchBarang();
     fetchBidHistory();
+
+    setIsLoading(false);
   }, [barang_id]);
 
   useEffect(() => {
@@ -117,7 +80,7 @@ const OnBid = () => {
       const timeleft = calculateTimeLeft(barang.end_time);
       setTimeLeft(timeleft);
 
-      if(!timeleft) {
+      if (!timeleft) {
         clearInterval(interval);
         setTimeLeft({});
       }
@@ -133,6 +96,7 @@ const OnBid = () => {
 
   const handlePlaceBid = async () => {
     const response = await placeBid(barang_id, bidPrice);
+    console.log(response);
     if (response) {
       toast.success("Bid placed successfully");
       window.location.reload();
@@ -157,125 +121,135 @@ const OnBid = () => {
 
   return (
     <>
-      <div className="flex flex-wrap justify-center gap-4 mt-8 mb-4">
-        <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
-          <CardHeader className="pb-3">
-            <CardTitle>{barang.nama_barang}</CardTitle>
-            <CardDescription className="max-w-lg text-balance leading-relaxed">
-              {barang.deskripsi}
-            </CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Input
-              type="text"
-              placeholder="Enter your bid"
-              value={`Rp ${bidPrice.toLocaleString("id-ID")}`}
-              onChange={handleBidPriceChange}
-              className="mr-2"
-            />
-            <Button onClick={handlePlaceBid}>Place New Bid</Button>
-          </CardFooter>
-        </Card>
-        <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
-          <CardHeader className="pb-2">
-            <CardDescription>Starting Price</CardDescription>
-            <CardTitle className="text-4xl">{`Rp ${initialPrice}`}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-muted-foreground">
-              The Lowest Possible Bid That Can Be Placed
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
-          <CardHeader className="pb-2">
-            <CardDescription>Latest Price</CardDescription>
-            <CardTitle className="text-4xl">{`Rp ${latestPrice}`}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-xs text-muted-foreground">
-              The Highest Bid Currently Offered
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-screen text-2xl text-gray-400">
+          Loading...
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-wrap justify-center gap-4 mt-8 mb-4">
+            <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
+              <CardHeader className="pb-3">
+                <CardTitle>{barang.nama_barang}</CardTitle>
+                <CardDescription className="max-w-lg text-balance leading-relaxed">
+                  {barang.deskripsi}
+                </CardDescription>
+              </CardHeader>
+              <CardFooter>
+                <Input
+                  type="text"
+                  placeholder="Enter your bid"
+                  value={`Rp ${bidPrice.toLocaleString("id-ID")}`}
+                  onChange={handleBidPriceChange}
+                  className="mr-2"
+                />
+                <Button onClick={handlePlaceBid}>Place New Bid</Button>
+              </CardFooter>
+            </Card>
+            <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
+              <CardHeader className="pb-2">
+                <CardDescription>Starting Price</CardDescription>
+                <CardTitle className="text-4xl">{`Rp ${initialPrice}`}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs text-muted-foreground">
+                  The Lowest Possible Bid That Can Be Placed
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="flex-grow w-full sm:w-1/3 lg:w-1/4 mx-auto">
+              <CardHeader className="pb-2">
+                <CardDescription>Latest Price</CardDescription>
+                <CardTitle className="text-4xl">{`Rp ${latestPrice}`}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-xs text-muted-foreground">
+                  The Highest Bid Currently Offered
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-      <Card className="flex-grow w-full sm:w-1/2 lg:w-1/3 mx-auto mb-4">
-        <CardHeader className="pb-3">
-          <CardDescription>Auction Countdown</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {timeLeft.days !== undefined ? (
-            <div className="text-2xl flex justify-center space-x-2">
-              <div className="flex flex-col items-center">
-                <div className="font-bold">{timeLeft.days}</div>
-                <div className="text-sm">Days</div>
-              </div>
-              <div className="font-bold">:</div>
-              <div className="flex flex-col items-center">
-                <div className="font-bold">{timeLeft.hours}</div>
-                <div className="text-sm">Hours</div>
-              </div>
-              <div className="font-bold">:</div>
-              <div className="flex flex-col items-center">
-                <div className="font-bold">{timeLeft.minutes}</div>
-                <div className="text-sm">Minutes</div>
-              </div>
-              <div className="font-bold">:</div>
-              <div className="flex flex-col items-center">
-                <div className="font-bold">{timeLeft.seconds}</div>
-                <div className="text-sm">Seconds</div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-2xl text-center">Auction has ended</div>
-          )}
-        </CardContent>
-      </Card>
+          <Card className="flex-grow w-full sm:w-1/2 lg:w-1/3 mx-auto mb-4">
+            <CardHeader className="pb-3">
+              <CardDescription>Auction Countdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {timeLeft.days !== undefined ? (
+                <div className="text-2xl flex justify-center space-x-2">
+                  <div className="flex flex-col items-center">
+                    <div className="font-bold">{timeLeft.days}</div>
+                    <div className="text-sm">Days</div>
+                  </div>
+                  <div className="font-bold">:</div>
+                  <div className="flex flex-col items-center">
+                    <div className="font-bold">{timeLeft.hours}</div>
+                    <div className="text-sm">Hours</div>
+                  </div>
+                  <div className="font-bold">:</div>
+                  <div className="flex flex-col items-center">
+                    <div className="font-bold">{timeLeft.minutes}</div>
+                    <div className="text-sm">Minutes</div>
+                  </div>
+                  <div className="font-bold">:</div>
+                  <div className="flex flex-col items-center">
+                    <div className="font-bold">{timeLeft.seconds}</div>
+                    <div className="text-sm">Seconds</div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-2xl text-center">Auction has ended</div>
+              )}
+            </CardContent>
+          </Card>
 
-      <Card className="w-full">
-        <CardHeader className="px-7">
-          <CardTitle>Bid History</CardTitle>
-          <CardDescription>
-            Bids that have been placed for this product
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Bidder</TableHead>
-                <TableHead className="hidden sm:table-cell">Email</TableHead>
-                <TableHead className="hidden sm:table-cell">Time</TableHead>
-                <TableHead className="text-right">Bid Price</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {bidder.map((item, index) => (
-                <TableRow
-                  key={index}
-                  className={index % 2 === 0 ? "bg-accent" : ""}
-                >
-                  <TableCell>
-                    <div className="font-medium">
-                      {censorName(item.fullname)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    {censorEmail(item.email)}
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    {new Date(item.bid_at).toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right">{`Rp ${item.bid_price.toLocaleString(
-                    "id-ID"
-                  )}`}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+          <Card className="w-full">
+            <CardHeader className="px-7">
+              <CardTitle>Bid History</CardTitle>
+              <CardDescription>
+                Bids that have been placed for this product
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Bidder</TableHead>
+                    <TableHead className="hidden sm:table-cell">
+                      Email
+                    </TableHead>
+                    <TableHead className="hidden sm:table-cell">Time</TableHead>
+                    <TableHead className="text-right">Bid Price</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {bidder.map((item, index) => (
+                    <TableRow
+                      key={index}
+                      className={index % 2 === 0 ? "bg-accent" : ""}
+                    >
+                      <TableCell>
+                        <div className="font-medium">
+                          {censorName(item.fullname)}
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {censorEmail(item.email)}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {new Date(item.bid_at).toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right">{`Rp ${item.bid_price.toLocaleString(
+                        "id-ID"
+                      )}`}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </>
+      )}
     </>
   );
 };
