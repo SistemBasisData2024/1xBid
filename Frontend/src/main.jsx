@@ -51,7 +51,7 @@ const router = createBrowserRouter([
     element: <AddProduct />,
   },
   {
-    path: "/payment",
+    path: "/transaksi/:transaksi_id",
     element: <Payment />,
   },
   {
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
     element: <NotFound />,
   },
   {
-    path: "/toko/:toko_id",
+    path: "/:toko_id",
     element: <TokoDetails />,
   },
   {

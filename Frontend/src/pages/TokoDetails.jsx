@@ -174,8 +174,8 @@ const TokoDetails = () => {
   const handleProductSubmit = async (e) => {
     e.preventDefault();
 
-    newProduct.harga_awal = parseBackPrice(newProduct.harga_awal);
-    newProduct.bid_multiplier = parseBackPrice(newProduct.bid_multiplier);
+    // newProduct.harga_awal = parseBackPrice(newProduct.harga_awal);
+    // newProduct.bid_multiplier = parseBackPrice(newProduct.bid_multiplier);
 
     const timeError = validateTime(newProduct.start_time, newProduct.end_time);
     if (timeError) {

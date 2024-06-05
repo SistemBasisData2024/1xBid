@@ -56,7 +56,9 @@ create table if not exists Toko (
     deskripsi text not null,
     created_at timestamp default now(),
     toko_picture text,
-    toko_status accountStatus not null default 'Active'
+    toko_status accountStatus not null default 'Active',
+    barang_sold_success int not null default 0,
+    barang_sold_failed int not null default 0
 );
 
 create table if not exists Barang (
@@ -71,7 +73,9 @@ create table if not exists Barang (
     deskripsi text not null,
     toko_id uuid references Toko(toko_id) on delete cascade,
     created_at timestamp default now(),
-    bid_multiplier int not null
+    bid_multiplier int not null,
+    winner_id uuid references Users(user_id) on delete set null,
+    barang_picture text
 );
 
 create table if not exists historyBid (
@@ -80,6 +84,7 @@ create table if not exists historyBid (
     user_id uuid references Users(user_id) on delete cascade,
     bid_price int not null,
     bid_at timestamp default now(),
+    is_winner boolean not null default false,
     constraint check_bid_price check (bid_price > 0)
 );
 
@@ -87,6 +92,16 @@ create table if not exists barangToko (
     barang_toko_id uuid primary key default gen_random_uuid(),
     barang_id uuid references Barang(barang_id) on delete cascade,
     toko_id uuid references Toko(toko_id) on delete cascade
+);
+
+create table if not exists Addresses (
+    address_id uuid primary key default gen_random_uuid(),
+    user_id uuid references Users(user_id) on delete cascade,
+    address text not null,
+    postal_code varchar(10) not null,
+    city varchar(255) not null,
+    province varchar(255) not null,
+    created_at timestamp default now()
 );
 
 create table if not exists Transaksi (
@@ -98,17 +113,8 @@ create table if not exists Transaksi (
     created_at timestamp default now(),
     price int not null,
     payment_option paymentOption not null,
-    payment_at timestamp
-);
-
-create table if not exists Addresses (
-    address_id uuid primary key default gen_random_uuid(),
-    user_id uuid references Users(user_id) on delete cascade,
-    address text not null,
-    postal_code varchar(10) not null,
-    city varchar(255) not null,
-    province varchar(255) not null,
-    created_at timestamp default now()
+    payment_at timestamp,
+    address_id uuid references Addresses(address_id) on delete set null
 );
 
 drop type if exists statusBarang, roleUsers, statusTransaksi, kategoriBarang, paymentOption, accountStatus cascade;
