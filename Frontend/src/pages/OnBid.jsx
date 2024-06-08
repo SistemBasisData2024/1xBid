@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { placeBid, getBidHistory, getBarang } from "@/api/bid.handler";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { io } from "socket.io-client";
 
 const OnBid = () => {
   const [bidPrice, setBidPrice] = useState("");
@@ -47,6 +48,16 @@ const OnBid = () => {
     return { days, hours, minutes, seconds };
   };
 
+  const connectSocket = () => {
+    const socket = io("http://localhost:5001");
+    socket.on("new_bid", (data) => {
+      if (data.barang_id === barang_id) {
+        fetchBidHistory();
+        fetchBarang();
+      }
+    });
+  }
+
   const fetchBarang = async () => {
     const response = await getBarang(barang_id);
     if (response) {
@@ -71,6 +82,7 @@ const OnBid = () => {
   useEffect(() => {
     fetchBarang();
     fetchBidHistory();
+    connectSocket();
 
     setIsLoading(false);
   }, [barang_id]);
