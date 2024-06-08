@@ -26,7 +26,7 @@ export const getTransaksiDetailHandler = async (transaksi_id) => {
 
 export const getTransaksiHandler = async () => {
     try {
-        const response = await axios.get(BE_URL + '/transaksi');
+        const response = await axios.get(BE_URL + '/transaksi', { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         if (response.status !== 200) throw new Error('Failed to fetch transaksi data');
         return response.data;
     } catch (error) {

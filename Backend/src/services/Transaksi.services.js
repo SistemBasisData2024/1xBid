@@ -33,11 +33,12 @@ exports.getTransaksiDetail = async (user_id, params) => {
         if (barang.rows.length === 0) throw new Error('Barang not found');
         const user = await pool.query('SELECT * FROM users WHERE user_id = $1', [response.rows[0].user_id]);
         if (user.rows.length === 0) throw new Error('User not found');
-        const pembeli = { nama: user.rows[0].fullname, email: user.rows[0].email, phone_number: user.rows[0].phone_number, saldo: user.rows[0].saldo};
+        const userAddress = await pool.query('SELECT * FROM address WHERE user_id = $1', [response.rows[0].user_id]);
+        const pembeli = { nama: user.rows[0].fullname, email: user.rows[0].email, phone_number: user.rows[0].phone_number, saldo: user.rows[0].saldo, address: userAddress.rows};
         const toko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [response.rows[0].toko_id]);
         if (toko.rows.length === 0) throw new Error('Toko not found');
         const tokoData = { nama: toko.rows[0].nama_toko };
-        
+
         let address = null;
         if (response.rows[0].address_id) {
             const addressData = await pool.query('SELECT * FROM address WHERE address_id = $1', [response.rows[0].address_id]);
@@ -52,9 +53,36 @@ exports.getTransaksiDetail = async (user_id, params) => {
 
 exports.getTransaksi = async (user_id) => {
     try {
-        const response = await pool.query('SELECT * FROM transaksi WHERE user_id = $1', [user_id]);
-        if (response.rows.length === 0) throw new Error('Transaksi not found');
-        return { message: 'Transaksi found', data: response.rows }
+        const userTransaction = await pool.query('SELECT * FROM transaksi WHERE user_id = $1', [user_id]);
+        if (userTransaction.rows.length === 0) throw new Error('Transaksi not found');
+        
+        let barangPromises = userTransaction.rows.map(async (row) => {
+            const barang = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [row.barang_id]);
+            return barang.rows[0];
+        });
+
+        let tokoPromises = userTransaction.rows.map(async (row) => {
+            const toko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [row.toko_id]);
+            return toko.rows[0];
+        });
+
+        let addressPromises = userTransaction.rows.map(async (row) => {
+            if (row.address_id) {
+                const address = await pool.query('SELECT * FROM addresses WHERE address_id = $1', [row.address_id]);
+                return address.rows[0];
+            }
+            return null;
+        });
+
+        let barang = await Promise.all(barangPromises);
+        let toko = await Promise.all(tokoPromises);
+        let address = await Promise.all(addressPromises);
+
+        let transaksi = userTransaction.rows.map((row, index) => {
+            return { barang: barang[index], toko: toko[index], transaksi: row, address: address[index] }
+        });
+
+        return { message: 'Transaksi found', data: transaksi }
     } catch (error) {
         return { message: error.message }
     }
@@ -65,7 +93,7 @@ exports.cancelTransaksi = async (user_id, params) => {
         const { transaksi_id } = params;
         const response = await pool.query('SELECT * FROM transaksi WHERE transaksi_id = $1 AND user_id = $2', [transaksi_id, user_id]);
         if (response.rows.length === 0) throw new Error('Transaksi not found');
-        
+
         const updateTransaksi = await pool.query('UPDATE transaksi SET status = $1 WHERE transaksi_id = $2 RETURNING *', ['Failed', transaksi_id]);
         if (updateTransaksi.rows.length === 0) throw new Error
 

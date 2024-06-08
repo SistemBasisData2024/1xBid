@@ -15,35 +15,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { getTransaksiHandler } from "@/api/transaksi.handler";
+import { useNavigate } from "react-router-dom";
 
 const HistoryTab = () => {
-  //   const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const navigate = useNavigate();
 
-  //   useEffect(() => {
-  //     // Fetch transaction data from your API and set it to state
-  //     const fetchTransactions = async () => {
-  //       // endpoint
-  //       const response = await fetch("/api/transactions");
-  //       const data = await response.json();
-  //       setTransactions(data);
-  //     };
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const response = await getTransaksiHandler();
+      if(response) {
+        setTransactions(response.data);
+      } else {
+        console.log("Failed to fetch transaction data");
+      }
+    }
 
-  //     fetchTransactions();
-  //   }, []);
-
-  const transactions = [
-    {
-      itemName: "Laptop",
-      amount: "Rp. 15.000.000",
-      shopName: "Toko Elektronik",
-    },
-    {
-      itemName: "Smartphone",
-      amount: "Rp. 10.000.000",
-      shopName: "Toko Handphone",
-    },
-    { itemName: "Headphone", amount: "Rp. 1.500.000", shopName: "Toko Musik" },
-  ];
+    fetchTransactions();
+  });
 
   return (
     <Card className="rounded-lg">
@@ -62,9 +52,9 @@ const HistoryTab = () => {
           <TableBody>
             {transactions.map((transaction, index) => (
               <TableRow key={index}>
-                <TableCell>{transaction.itemName}</TableCell>
-                <TableCell>{transaction.amount}</TableCell>
-                <TableCell>{transaction.shopName}</TableCell>
+                <TableCell>{transaction.barang.nama_barang}</TableCell>
+                <TableCell>{transaction.barang.last_price}</TableCell>
+                <TableCell>{transaction.toko.nama_toko}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -76,8 +66,7 @@ const HistoryTab = () => {
                       <DropdownMenuItem
                         onClick={(event) => {
                           event.stopPropagation();
-                          setEditProductModalOpen(item);
-                          handleEditBarang(item);
+                          navigate(`/transaksi/${transaction.transaksi.transaksi_id}`);
                         }}
                       >
                         Details
