@@ -105,3 +105,9 @@ npm run dev
 ![Screenshot 2024-06-09 190822](https://github.com/SistemBasisData2024/1xBid/assets/144208794/707cb70f-6e3b-435a-b7b5-964ccdd66ca9)
 ### 8. Payment Page
 ![Screenshot 2024-06-09 191035](https://github.com/SistemBasisData2024/1xBid/assets/144208794/8c50d2b2-c708-4503-a8db-894321270490)
+
+
+# Progress Report
+![Screenshot 2024-05-26 203554](https://github.com/SistemBasisData2024/1xBid/assets/144208794/1d05eb6f-79fd-4f14-9ccb-be33fe7ccc72)
+
+![messageImage_1717860619535](https://github.com/SistemBasisData2024/1xBid/assets/144208794/f2c37a20-e3e4-4d45-93a3-fec1dd1ac904)
