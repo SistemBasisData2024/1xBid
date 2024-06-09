@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { getBarangHandler } from "@/api/toko.handler";
+import { getBarangHandler, getTokoHandler } from "@/api/toko.handler";
 import { toast } from "react-toastify";
 
 const calculateTimeLeft = (endTime) => {
@@ -41,9 +41,15 @@ const Product = () => {
   const navigate = useNavigate();
 
   const fetchProduct = async () => {
-    const response = await getBarangHandler(toko_id, barang_id);
-    if (response) {
-      setProduct(response);
+    const productResponse = await getBarangHandler(toko_id, barang_id);
+    if (productResponse) {
+      const tokoResponse = await getTokoHandler(toko_id);
+      if (tokoResponse) {
+        setProduct({ ...productResponse, toko: tokoResponse.toko });
+      } else {
+        toast.error("Failed to fetch shop details");
+        navigate("/notfound");
+      }
     } else {
       toast.error("Failed to fetch product");
       navigate("/notfound");
@@ -107,8 +113,8 @@ const Product = () => {
             {product.nama_barang || "Product Name"}
           </h1>
           <Separator className="my-2" />
-          <a href={`/${product.toko_id}`} className="text-blue-500 underline">
-            {product.toko_id || "Shop Name"}
+          <a href={`/${product.toko_id}`} className="text-black-500 underline">
+            {product.toko ? product.toko.nama_toko : "Shop Name"}
           </a>
           <Separator className="my-2" />
           <p className="text-lg text-blue-600 mb-4">
