@@ -137,13 +137,17 @@ const Product = () => {
       <CardFooter className="p-6">
         <Button
           className={`w-full text-white ${
-            Object.keys(timeLeft).length ? "bg-green-500" : "bg-gray-500"
+            Object.keys(timeLeft).length && product.status === "On Bid"
+              ? "bg-green-500"
+              : "bg-gray-500"
           }`}
-          disabled={!Object.keys(timeLeft).length}
+          disabled={
+            !Object.keys(timeLeft).length || product.status !== "On Bid"
+          }
           onClick={() => navigate(`/onbid/${barang_id}`)}
         >
           Buy Now
-        </Button>{" "}
+        </Button>
       </CardFooter>
     </Card>
   );

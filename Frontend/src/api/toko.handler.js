@@ -33,7 +33,6 @@ export const deleteTokoHandler = async (toko_id) => {
 export const addBarangHandler = async (toko_id, body) => {
     try {
         const response = await axios.post(BE_URL + '/toko/' + toko_id + '/add-barang', body, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -51,7 +50,7 @@ export const editBarangHandler = async (toko_id, barang_id, body) => {
 
 export const deleteBarangHandler = async (toko_id, barang_id) => {
     try {
-        const response = await axios.delete(BE_URL + '/toko/' + toko_id + '/' + barang_id);
+        const response = await axios.delete(BE_URL + '/toko/' + toko_id + '/' + barang_id, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         return response.data;
     } catch (error) {
         console.error(error);

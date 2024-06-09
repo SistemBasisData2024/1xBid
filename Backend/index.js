@@ -7,6 +7,7 @@ const userRoutes = require('./src/routes/User.routes');
 const homeRoutes = require('./src/routes/Home.routes');
 const bidRoutes = require('./src/routes/Bid.routes');
 const transaksiRoutes = require('./src/routes/Transaksi.routes');
+const searchRoutes = require('./src/routes/Search.routes');
 const utils = require('./src/utils/Auth.utils');
 const { pool } = require('./src/config/db.config');
 const { updateStatus, bidWinner, checkTransaksiTimeout } = require('./src/routines/Bid.routines');
@@ -34,6 +35,7 @@ app.use('/user', userRoutes);
 app.use('/home', homeRoutes);
 app.use('/bid', bidRoutes);
 app.use('/transaksi', transaksiRoutes);
+app.use('/search', searchRoutes);
 
 // interval every 5 minutes
 setInterval(utils.keepDBAlive, 1000*60*5);
