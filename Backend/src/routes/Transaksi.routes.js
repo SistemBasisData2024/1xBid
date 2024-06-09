@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.use(authMiddlewares.authenticate);
 
+router.get('/address', transaksiControllers.getAddress);
 router.post('/:barang_id', transaksiControllers.createTransaksi);
 router.get('/:transaksi_id', transaksiControllers.getTransaksiDetail);
 router.delete('/:transaksi_id', transaksiControllers.cancelTransaksi);

@@ -45,3 +45,15 @@ export const cancelTransaksi = async (transaksi_id) => {
         return false;
     }
 }
+
+export const getAddressHandler = async () => {
+    try {
+        const response = await axios.get(BE_URL + '/transaksi/address', { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        if (response.data.message === 'Address not found') throw new Error('Address not found');
+        if (response.status !== 200) throw new Error('Failed to fetch address');
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+}

@@ -26,26 +26,42 @@ exports.createTransaksi = async (user_id, params, body) => {
 exports.getTransaksiDetail = async (user_id, params) => {
     try {
         const { transaksi_id } = params;
-        const response = await pool.query('SELECT * FROM transaksi WHERE transaksi_id = $1 AND user_id = $2', [transaksi_id, user_id]);
-        if (response.rows.length === 0) throw new Error('Transaksi not found');
+        const transaksiResponse = await pool.query('SELECT * FROM transaksi WHERE transaksi_id = $1 AND user_id = $2', [transaksi_id, user_id]);
+        if (transaksiResponse.rows.length === 0) throw new Error('Transaksi not found');
 
-        const barang = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [response.rows[0].barang_id]);
-        if (barang.rows.length === 0) throw new Error('Barang not found');
-        const user = await pool.query('SELECT * FROM users WHERE user_id = $1', [response.rows[0].user_id]);
-        if (user.rows.length === 0) throw new Error('User not found');
-        const userAddress = await pool.query('SELECT * FROM address WHERE user_id = $1', [response.rows[0].user_id]);
-        const pembeli = { nama: user.rows[0].fullname, email: user.rows[0].email, phone_number: user.rows[0].phone_number, saldo: user.rows[0].saldo, address: userAddress.rows};
-        const toko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [response.rows[0].toko_id]);
-        if (toko.rows.length === 0) throw new Error('Toko not found');
-        const tokoData = { nama: toko.rows[0].nama_toko };
+        const barangResponse = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [transaksiResponse.rows[0].barang_id]);
+        if (barangResponse.rows.length === 0) throw new Error('Barang not found');
 
-        let address = null;
-        if (response.rows[0].address_id) {
-            const addressData = await pool.query('SELECT * FROM address WHERE address_id = $1', [response.rows[0].address_id]);
-            if (addressData.rows.length > 0) address = addressData.rows[0];
+        const userResponse = await pool.query('SELECT * FROM users WHERE user_id = $1', [transaksiResponse.rows[0].user_id]);
+        if (userResponse.rows.length === 0) throw new Error('User not found');
+
+        const tokoResponse = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [transaksiResponse.rows[0].toko_id]);
+        if (tokoResponse.rows.length === 0) throw new Error('Toko not found');
+
+        const addressResponse = await pool.query('SELECT * FROM addresses WHERE user_id = $1', [transaksiResponse.rows[0].user_id]);
+        if (addressResponse.rows.length === 0) return null;
+
+        return {
+            message: 'Transaksi detail', data: { transaksi: transaksiResponse.rows[0], barang: barangResponse.rows[0], user: userResponse.rows[0], toko: tokoResponse.rows[0], address: addressResponse.rows}
         }
 
-        return { message: 'Transaksi detail', data: { barang: barang.rows[0], pembeli, toko: tokoData, transaksi: response.rows[0], address } }
+        // const barang = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [response.rows[0].barang_id]);
+        // if (barang.rows.length === 0) throw new Error('Barang not found');
+        // const user = await pool.query('SELECT * FROM users WHERE user_id = $1', [response.rows[0].user_id]);
+        // if (user.rows.length === 0) throw new Error('User not found');
+        // const userAddress = await pool.query('SELECT * FROM address WHERE user_id = $1', [response.rows[0].user_id]);
+        // const pembeli = { nama: user.rows[0].fullname, email: user.rows[0].email, phone_number: user.rows[0].phone_number, saldo: user.rows[0].saldo, address: userAddress.rows};
+        // const toko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [response.rows[0].toko_id]);
+        // if (toko.rows.length === 0) throw new Error('Toko not found');
+        // const tokoData = { nama: toko.rows[0].nama_toko };
+
+        // let address = null;
+        // if (response.rows[0].address_id) {
+        //     const addressData = await pool.query('SELECT * FROM address WHERE address_id = $1', [response.rows[0].address_id]);
+        //     if (addressData.rows.length > 0) address = addressData.rows[0];
+        // }
+
+        // return { message: 'Transaksi detail', data: { barang: barang.rows[0], pembeli, toko: tokoData, transaksi: response.rows[0], address } }
     } catch (error) {
         return { message: error.message }
     }
@@ -55,7 +71,7 @@ exports.getTransaksi = async (user_id) => {
     try {
         const userTransaction = await pool.query('SELECT * FROM transaksi WHERE user_id = $1', [user_id]);
         if (userTransaction.rows.length === 0) throw new Error('Transaksi not found');
-        
+
         let barangPromises = userTransaction.rows.map(async (row) => {
             const barang = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [row.barang_id]);
             return barang.rows[0];
@@ -107,6 +123,16 @@ exports.cancelTransaksi = async (user_id, params) => {
         if (punishUser.rows.length === 0) throw new Error('Failed to punish user');
 
         return { message: 'Transaksi canceled', data: updateTransaksi.rows[0] }
+    } catch (error) {
+        return { message: error.message }
+    }
+}
+
+exports.getAddress = async (user_id) => {
+    try {
+        const response = await pool.query('SELECT * FROM addresses WHERE user_id = $1', [user_id]);
+        if (response.rows.length === 0) throw new Error('Address not found');
+        return { message: 'Address found', data: response.rows }
     } catch (error) {
         return { message: error.message }
     }
