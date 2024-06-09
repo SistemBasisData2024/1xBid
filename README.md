@@ -38,13 +38,13 @@ Website ini memiliki beberapa fitur utama, yaitu:
 
 ### Flowchart
 
-## Installation Guide
+# Installation Guide
 Clone repository berikut:
 ```
 https://github.com/SistemBasisData2024/1xBid
 ```
 
-### Backend
+## Backend
 - Pastikan anda berada di folder yang benar
 
 ![image](https://github.com/SistemBasisData2024/1xBid/assets/144208794/45cbce72-a0f3-4830-bb2d-1d551ecb959d)
@@ -71,7 +71,7 @@ PGPASSWORD='j6u9NasKkFIV'
 npm run start
 ```
 
-### Frontend
+## Frontend
 - Pastikan anda berada di folder yang benar
 
 ![image](https://github.com/SistemBasisData2024/1xBid/assets/144208794/a9cb2439-e571-4c94-88ba-0fbe6bf0cbbe)
