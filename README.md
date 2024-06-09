@@ -5,7 +5,7 @@ Merupakan sebuah website yang dirancang untuk memfasilitasi proses pelelangan ba
 ### Anggota Kelompok
 - [Giovan Christoffel Sihombing](https://github.com/MorpKnight) - 2206816084
 - [Fathin Umara Aero](https://github.com/rovaero) - 2206814186
-- [Darren Nathanael Boentara](https://github.com/DarrenNathanaelB) - 2206062964
+- [Darren Nathanael Boentara](https://github.com/DarrenNathanaelB) - 2206059490
 
 ## Fitur Utama
 Website ini memiliki beberapa fitur utama, yaitu:
@@ -29,3 +29,5 @@ Website ini memiliki beberapa fitur utama, yaitu:
 - **Authentication**         : JWT (JSON Web Token)
 - **Real-time Communication**: Socket.io
 
+## UML
+![UML1xBid](https://github.com/SistemBasisData2024/1xBid/assets/144208794/4cecb0ce-519a-4d85-96ec-421500923af4)
