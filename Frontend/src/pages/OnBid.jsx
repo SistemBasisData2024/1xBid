@@ -56,14 +56,22 @@ const OnBid = () => {
         fetchBarang();
       }
     });
-  }
+  };
 
   const fetchBarang = async () => {
     const response = await getBarang(barang_id);
     if (response) {
       setBarang(response.data);
-      setLatestPrice(response.data.last_price ? response.data.last_price.toLocaleString("id-ID") : "");
-      setInitialPrice(response.data.harga_awal ? response.data.harga_awal.toLocaleString("id-ID") : "");
+      setLatestPrice(
+        response.data.last_price
+          ? response.data.last_price.toLocaleString("id-ID")
+          : ""
+      );
+      setInitialPrice(
+        response.data.harga_awal
+          ? response.data.harga_awal.toLocaleString("id-ID")
+          : ""
+      );
     } else {
       toast.error("Failed to fetch product");
       navigate("/notfound");
@@ -101,6 +109,12 @@ const OnBid = () => {
     return () => clearInterval(interval);
   });
 
+  useEffect(() => {
+    if (barang.status !== "On Bid") {
+      navigate("/notfound");
+    }
+  });
+
   const handleBidPriceChange = (e) => {
     const value = Number(e.target.value.replace(/[^0-9]/g, ""));
     setBidPrice(value);
@@ -108,7 +122,6 @@ const OnBid = () => {
 
   const handlePlaceBid = async () => {
     const response = await placeBid(barang_id, bidPrice);
-    console.log(response);
     if (response) {
       toast.success("Bid placed successfully");
       window.location.reload();

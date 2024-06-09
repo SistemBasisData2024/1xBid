@@ -725,7 +725,7 @@ const TokoDetails = () => {
                   <Button
                     variant="destructive"
                     onClick={() => {
-                      handleDeleteBarangSubmit(item.barang_id);
+                      handleDeleteBarangSubmit(selectedProductId);
                       handleDeleteProductModalClose();
                     }}
                   >
