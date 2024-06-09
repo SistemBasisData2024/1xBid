@@ -42,7 +42,7 @@ export const addBarangHandler = async (toko_id, body) => {
 
 export const editBarangHandler = async (toko_id, barang_id, body) => {
     try {
-        const response = await axios.put(BE_URL + '/toko/' + toko_id + '/' + barang_id, body);
+        const response = await axios.put(BE_URL + '/toko/' + toko_id + '/' + barang_id, body, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         return response.data;
     } catch (error) {
         console.error(error);

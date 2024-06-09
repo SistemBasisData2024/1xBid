@@ -40,6 +40,8 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
   addBarangHandler,
+  deleteBarangHandler,
+  editBarangHandler,
   getTokoHandler,
   updateTokoHandler,
 } from "@/api/toko.handler";
@@ -184,7 +186,8 @@ const TokoDetails = () => {
   };
 
   const parseBackPrice = (price) => {
-    return parseInt(price.replace(/\D/g, ""));
+    const priceStr = typeof price === "string" ? price : String(price);
+    return parseInt(priceStr.replace(/\D/g, ""));
   };
 
   const handleProductSubmit = async (e) => {
@@ -207,6 +210,46 @@ const TokoDetails = () => {
       toast.error("Failed to add product");
     }
     setAddProductModalOpen(false);
+  };
+
+  const handleEditProductSubmit = async (e) => {
+    e.preventDefault();
+
+    newProduct.harga_awal = parseBackPrice(newProduct.harga_awal);
+    newProduct.bid_multiplier = parseBackPrice(newProduct.bid_multiplier);
+
+    const timeError = validateTime(newProduct.start_time, newProduct.end_time);
+    if (timeError) {
+      toast.error(timeError);
+      return;
+    }
+
+    newProduct.start_time = new Date(newProduct.start_time);
+    newProduct.end_time = new Date(newProduct.end_time);
+    console.log(newProduct);
+
+    const response = await editBarangHandler(
+      toko_id,
+      newProduct.barang_id,
+      newProduct
+    );
+    if (response) {
+      toast.success("Product updated successfully");
+      window.location.reload();
+    } else {
+      toast.error("Failed to update product");
+    }
+    setEditProductModalOpen(false);
+  };
+
+  const handleDeleteBarangSubmit = async (barang_id) => {
+    const response = await deleteBarangHandler(toko_id, barang_id);
+    if (response) {
+      toast.success("Product deleted successfully");
+      window.location.reload();
+    } else {
+      toast.error("Failed to delete product");
+    }
   };
 
   const handleEditBarang = (barang) => {
@@ -290,57 +333,66 @@ const TokoDetails = () => {
                         <TableCell>{`Rp ${item.bid_multiplier.toLocaleString(
                           "id-ID"
                         )},00`}</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <span className="material-icons hover:bg-gray-100 hover:shadow-lg hover:cursor-pointer p-2 rounded-lg">
-                                more_vert
-                              </span>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              <DropdownMenuItem
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  setEditProductModalOpen(item);
-                                  handleEditBarang(item);
-                                }}
-                              >
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                }}
-                              >
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <span>Delete</span>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogTitle>Confirm deletion</DialogTitle>
-                                    <DialogDescription>
-                                      Are you sure you want to delete this
-                                      product?
-                                    </DialogDescription>
-                                    <DialogFooter>
-                                      <Button variant="outline">No</Button>
-                                      <Button
-                                        variant="destructive"
-                                        onClick={(event) => {
-                                          event.stopPropagation();
-                                          // Add your delete handler here
-                                          // deleteProductHandler(item.barang_id);
-                                        }}
-                                      >
-                                        Yes
-                                      </Button>
-                                    </DialogFooter>
-                                  </DialogContent>
-                                </Dialog>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
+                        {item.status === "Not Available" ? (
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <span className="material-icons hover:bg-gray-100 hover:shadow-lg hover:cursor-pointer p-2 rounded-lg">
+                                  more_vert
+                                </span>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DropdownMenuItem
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    setEditProductModalOpen(item);
+                                    handleEditBarang(item);
+                                  }}
+                                >
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                  }}
+                                >
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <span>Delete</span>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                      <DialogTitle>
+                                        Confirm deletion
+                                      </DialogTitle>
+                                      <DialogDescription>
+                                        Are you sure you want to delete this
+                                        product?
+                                      </DialogDescription>
+                                      <DialogFooter>
+                                        <Button variant="outline">No</Button>
+                                        <Button
+                                          variant="destructive"
+                                          onClick={(event) => {
+                                            // Prevent the dialog from closing and stop propagation
+                                            event.preventDefault();
+                                            event.stopPropagation();
+                                            handleDeleteBarangSubmit(
+                                              item.barang_id
+                                            );
+                                          }}
+                                        >
+                                          Yes
+                                        </Button>
+                                      </DialogFooter>
+                                    </DialogContent>
+                                  </Dialog>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        ) : (
+                          <TableCell></TableCell>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>
@@ -542,7 +594,7 @@ const TokoDetails = () => {
                 <CardTitle className="text-xl">Edit Product</CardTitle>
               </CardHeader>
               <CardContent>
-                <form className="space-y-4" onSubmit={handleProductSubmit}>
+                <form className="space-y-4" onSubmit={handleEditProductSubmit}>
                   <div>
                     <Label htmlFor="nama_barang">Nama Barang</Label>
                     <Input
@@ -560,7 +612,9 @@ const TokoDetails = () => {
                       type="text"
                       name="harga_awal"
                       id="harga_awal"
-                      value={newProduct.harga_awal}
+                      value={`Rp ${newProduct.harga_awal?.toLocaleString(
+                        "id-ID"
+                      )}`}
                       onChange={handleProductChange}
                       required
                     />
@@ -647,7 +701,9 @@ const TokoDetails = () => {
                       type="text"
                       name="bid_multiplier"
                       id="bid_multiplier"
-                      value={newProduct.bid_multiplier}
+                      value={`Rp ${newProduct.bid_multiplier?.toLocaleString(
+                        "id-ID"
+                      )}`}
                       onChange={handleProductChange}
                       required
                     />
