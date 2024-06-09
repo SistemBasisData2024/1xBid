@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
   const [isLogged, setIsLogged] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -12,6 +14,12 @@ const NavBar = () => {
       setIsLogged(true);
     }
   }, []);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${searchQuery}`);
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-10 block w-full max-w-full px-4 py-2 text-black bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 border rounded-xl shadow-md h-max border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
@@ -52,9 +60,12 @@ const NavBar = () => {
           <Input
             type="text"
             placeholder="Search..."
-            className="w-64 p-2 border border-gray-300 rounded "
+            className="w-64 p-2 border border-gray-300 rounded"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
-          <Button className="bg-black text-white py-2 px-4 rounded">
+          <Button className="bg-black text-white py-2 px-4 rounded" onClick={handleSearch}>
             Search
           </Button>
 

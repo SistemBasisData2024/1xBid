@@ -15,6 +15,7 @@ import {
   createTransaksiHandler,
   getAddressHandler,
   getTransaksiDetailHandler,
+  cancelTransaksi,
 } from "@/api/transaksi.handler";
 import { toast } from "react-toastify";
 import {
@@ -81,6 +82,16 @@ const Payment = () => {
 
   const handleMakePaymentClick = () => {
     setIsConfirmOpen(true);
+  };
+
+  const handleCancelPaymentClick = async () => {
+    const response = await cancelTransaksi(transaksi_id);
+    if (response) {
+      toast.success("Payment canceled");
+      navigate("/profile");
+    } else {
+      toast.error("Failed to cancel payment");
+    }
   };
 
   const handleCloseModal = () => {
@@ -260,7 +271,15 @@ const Payment = () => {
           </CardContent>
           <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
             <Button
-              className={`ml-auto mr-0 ${
+              className="bg-red-500 text-white"
+              variant="outline"
+              onClick={handleCancelPaymentClick}
+              disabled={transaksi.transaksi?.status === "Success"}
+            >
+              Cancel Payment
+            </Button>
+            <Button
+              className={`ml-auto mr-2 ${
                 transaksi.transaksi?.status === "Success"
                   ? "bg-green-500 text-white"
                   : transaksi.user?.saldo < transaksi.transaksi?.price
