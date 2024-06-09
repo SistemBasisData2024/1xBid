@@ -24,34 +24,19 @@ const NavBar = () => {
   return (
     <nav className="sticky top-0 z-10 block w-full max-w-full px-4 py-2 text-black bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 border rounded-xl shadow-md h-max border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
       <div className="flex items-center justify-between text-blue-gray-900">
-        <a
-          href="/"
+        <Link
+          to="/"
           className="mr-4 block cursor-pointer py-1.5 font-sans text-base font-medium leading-relaxed text-inherit antialiased"
         >
           1xBid
-        </a>
+        </Link>
         <div className="flex items-center gap-4">
           <div className="hidden mr-4 lg:block">
             <ul className="flex flex-col gap-2 mt-2 mb-4 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
               <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
-                  Pages
-                </a>
-              </li>
-              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
-                  Account
-                </a>
-              </li>
-              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
-                  Blocks
-                </a>
-              </li>
-              <li className="block p-1 font-sans text-sm antialiased font-normal leading-normal text-blue-gray-900">
-                <a href="#" className="flex items-center">
-                  Docs
-                </a>
+                <Link to="/" className="flex items-center">
+                  Home
+                </Link>
               </li>
             </ul>
           </div>
@@ -72,33 +57,33 @@ const NavBar = () => {
           {/* Hide this when already logged in */}
           {!isLogged && (
             <div className="flex items-center gap-x-1">
-              <a href="/login">
+              <Link to="/login">
                 <button
                   className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
                   type="button"
                 >
                   <span>Log In</span>
                 </button>
-              </a>
-              <a href="/register">
+              </Link>
+              <Link to="/register">
                 <button
                   className="hidden select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block"
                   type="button"
                 >
                   <span>Sign in</span>
                 </button>
-              </a>
+              </Link>
             </div>
           )}
 
           {/* Show this when already logged in */}
           {isLogged && (
             <div className="flex items-center gap-x-1">
-              <a href="/profile">
+              <Link to="/profile">
                 <button className="hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block">
                   <span>Profile</span>
                 </button>
-              </a>
+              </Link>
             </div>
           )}
 
