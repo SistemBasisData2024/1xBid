@@ -35,3 +35,12 @@ exports.cancelTransaksi = async (req, res) => {
         return res.status(500).json(error);
     }
 }
+
+exports.getAddress = async (req, res) => {
+    try {
+        const response = await transaksiServices.getAddress(req.user_id);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
