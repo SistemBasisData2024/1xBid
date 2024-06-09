@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MoreHorizontal } from "lucide-react";
 import {
     DropdownMenu,
@@ -24,10 +24,17 @@ const Search = () => {
         // Add more products as needed
     ];
 
-    const { searchQuery } = useParams();
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+    const searchQuery = query.get('query') || '';
 
-    const filteredProducts = products.filter(product => product.nama_barang.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+    const [filteredProducts, setFilteredProducts] = useState([]);
+
+    useEffect(() => {
+        const filtered = products.filter(product => product.nama_barang.toLowerCase().includes(searchQuery.toLowerCase()));
+        setFilteredProducts(filtered);
+    }, [searchQuery]);
+
     return (
         <div className="flex flex-wrap justify-start ml-24 mr-24">
             <p className="w-full text-2xl text-left py-2 ml-4 mt-2">Showing Results for "{searchQuery}"</p>
