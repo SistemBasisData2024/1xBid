@@ -35,8 +35,10 @@ Website ini memiliki beberapa fitur utama, yaitu:
 ![UML1xBid](https://github.com/SistemBasisData2024/1xBid/assets/144208794/4cecb0ce-519a-4d85-96ec-421500923af4)
 
 ### ERD
+![ERD 1xBid drawio](https://github.com/SistemBasisData2024/1xBid/assets/144208794/07a772e3-5c13-45cb-be40-6fa9fecf5ed8)
 
 ### Flowchart
+![Flowchart-1xBid](https://github.com/SistemBasisData2024/1xBid/assets/144208794/e1fdf7b6-030f-440f-a7fa-e88f95c56d08)
 
 # Installation Guide
 Clone repository berikut:
