@@ -7,7 +7,7 @@ exports.getTokoById = async (params) => {
         const responseToko = await pool.query('SELECT * FROM toko WHERE toko_id = $1', [toko_id]);
         if (responseToko.rows.length === 0) throw new Error('Toko not found');
 
-        const responseBarang = await pool.query('SELECT * FROM barang WHERE barang_id IN (SELECT barang_id FROM barangToko WHERE toko_id = $1)', [toko_id]);
+        const responseBarang = await pool.query('SELECT * FROM barang WHERE barang_id IN (SELECT barang_id FROM barangToko WHERE toko_id = $1) ORDER BY created_at DESC', [toko_id]);
 
         return { message: 'Toko fetched successfully', data: { toko: responseToko.rows[0], barang: responseBarang.rows } };
     } catch (error) {
@@ -66,7 +66,7 @@ exports.createBarang = async (params, body) => {
         const end_time_date = new Date(end_time);
 
         validateTime(start_time_date, end_time_date);
-        
+
         const response = await pool.query('INSERT INTO barang (nama_barang, deskripsi, harga_awal, start_time, end_time, kategori, bid_multiplier, status, toko_id, last_price) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', [nama_barang, deskripsi, harga_awal, start_time_date, end_time_date, kategori, bid_multiplier, status, toko_id, harga_awal]);
         if (response.rows.length === 0) throw new Error('Failed to create barang');
 
@@ -92,11 +92,18 @@ exports.editBarang = async (params, body) => {
         const isBarangInDB = await pool.query('SELECT * FROM barang WHERE barang_id = $1', [barang_id]);
         if (isBarangInDB.rows.length === 0) throw new Error('Barang not found');
 
+        const currentTime = new Date();
+        const minimumStartTime = new Date(currentTime.getTime() + process.env.START_TIME_MIN);
+        if (isBarangInDB.rows[0].start_time < minimumStartTime) throw new Error('Barang has already started, cannot update Barang');
+        if (isBarangInDB.rows[0].status !== 'Not Available') throw new Error("Barang can't be edited because it's already started");
+
         if (isBarangInDB.rows[0].start_time < new Date()) throw new Error('Barang has been started, cannot update Barang');
 
         if (barang.toko_id) delete barang.toko_id;
         if (barang.barang_id) delete barang.barang_id;
         if (barang.status) delete barang.status;
+        if (barang.start_time) barang.start_time = new Date(barang.start_time);
+        if (barang.end_time) barang.end_time = new Date(barang.end_time);
 
         const fields = [];
         const values = [];
