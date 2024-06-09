@@ -94,7 +94,7 @@ npm run dev
 ### 2. Signup Page
 ![Screenshot 2024-06-09 185806](https://github.com/SistemBasisData2024/1xBid/assets/144208794/290fcdbf-6803-4dda-b4f9-9d3a0df06d28)
 ### 3. Homepage
-
+![messageImage_1717951053953](https://github.com/SistemBasisData2024/1xBid/assets/144208794/1b55f692-809b-4532-baf7-c90da73a6035)
 ### 4. Profile Page
 ![Screenshot 2024-06-09 190726](https://github.com/SistemBasisData2024/1xBid/assets/144208794/e5ec9472-e7b9-48f1-8083-4ff33c6e31e6)
 ### 5. Toko Details Page
