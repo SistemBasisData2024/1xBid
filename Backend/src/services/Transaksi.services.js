@@ -11,11 +11,12 @@ exports.createTransaksi = async (user_id, params, body) => {
         const updateSaldo = await pool.query('UPDATE users SET saldo = saldo - $1 WHERE user_id = $2 RETURNING *', [response.rows[0].price, user_id]);
         if (updateSaldo.rows.length === 0) throw new Error('Failed to update saldo user');
 
-        const checkAddress = await pool.query('SELECT * FROM address WHERE address_id = $1 AND user_id = $2', [address_id, user_id]);
+        const checkAddress = await pool.query('SELECT * FROM addresses WHERE address_id = $1 AND user_id = $2', [address_id, user_id]);
         if (checkAddress.rows.length === 0) throw new Error('Address not found');
-
-        const updateTransaksi = await pool.query('UPDATE transaksi SET status = $1, address_id = $2, payment_option = $3, payment_at = $4 WHERE transaksi_id = $5 RETURNING *', ['Success', address_id, payment_option, new Date(), transaksi_id]);
+        
+        const updateTransaksi = await pool.query('UPDATE transaksi SET address_id = $1, payment_option = $2, status = $3 WHERE transaksi_id = $4 RETURNING *', [address_id, payment_option, 'Success', transaksi_id]);
         if (updateTransaksi.rows.length === 0) throw new Error('Failed to update transaksi')
+
 
         return { message: 'Transaksi success', data: updateTransaksi.rows[0] }
     } catch (error) {

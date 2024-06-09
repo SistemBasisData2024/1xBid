@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const BE_URL = import.meta.env.VITE_BE_URL;
 
-export const createTransaksiHandler = async (transaksi_id, address_id, payment_method) => {
+export const createTransaksiHandler = async (transaksi_id, address_id, payment_option) => {
     try {
-        const response = await axios.post(BE_URL + `/transaksi/${transaksi_id}`, { address_id, payment_method }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
+        const response = await axios.post(BE_URL + `/transaksi/${transaksi_id}`, { address_id, payment_option }, { headers: { cookies: `token=${localStorage.getItem('token')}` } });
         if (response.status !== 200) throw new Error('Failed to create transaksi');
         return response.data;
     } catch (error) {

@@ -12,6 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  createTransaksiHandler,
   getAddressHandler,
   getTransaksiDetailHandler,
 } from "@/api/transaksi.handler";
@@ -58,43 +59,21 @@ const Payment = () => {
     fetchAddress();
   }, [transaksi_id]);
 
+  useEffect(() => {
+    if (transaksi.transaksi?.status === "Success") {
+      setSelectedAddress(
+        address.find(
+          (addr) => addr.address_id === transaksi.transaksi.address_id
+        )
+      );
+    }
+  });
+
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
-
-  const pembeli = {
-    nama: "NIGGA",
-    email: "NIGGA",
-    phone_number: "NIGGA",
-    saldo: "NIGGA",
-    addresses: [
-      {
-        address: "123 Main St",
-        city: "Jakarta",
-        province: "DKI Jakarta",
-        postal_code: "12345",
-        chosen: true,
-      },
-      {
-        address: "456 Elm St",
-        city: "Bandung",
-        province: "West Java",
-        postal_code: "67890",
-        chosen: false,
-      },
-      {
-        address: "789 Kutek",
-        city: "Depok",
-        province: "West Java",
-        postal_code: "88888",
-        chosen: false,
-      },
-    ],
-  };
-
-  const barang = [{ nama_barang: "Barang 1", harga_awal: "$500.00" }];
 
   const handleSelectedAddress = (address_id) => {
     setSelectedAddress(address.find((addr) => addr.address_id === address_id));
@@ -106,6 +85,20 @@ const Payment = () => {
 
   const handleCloseModal = () => {
     setIsConfirmOpen(false);
+  };
+
+  const handleConfirmPayment = async () => {
+    const response = await createTransaksiHandler(
+      transaksi_id,
+      selectedAddress.address_id,
+      "Saldo"
+    );
+    if (response) {
+      toast.success("Payment successful");
+      // navigate("/profile");
+    } else {
+      toast.error("Failed to make payment");
+    }
   };
 
   return (
@@ -122,12 +115,14 @@ const Payment = () => {
             <div className="ml-auto flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button size="sm" variant="outline" className="h-8 gap-1">
-                    <Truck className="h-3.5 w-3.5" />
-                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                      Select Address
-                    </span>
-                  </Button>
+                  {transaksi.transaksi?.status !== "Success" && (
+                    <Button size="sm" variant="outline" className="h-8 gap-1">
+                      <Truck className="h-3.5 w-3.5" />
+                      <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Select Address
+                      </span>
+                    </Button>
+                  )}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   <DropdownMenuLabel>Select Address</DropdownMenuLabel>
@@ -266,15 +261,22 @@ const Payment = () => {
           <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
             <Button
               className={`ml-auto mr-0 ${
-                transaksi.user?.saldo < transaksi.transaksi?.price
+                transaksi.transaksi?.status === "Success"
+                  ? "bg-green-500 text-white"
+                  : transaksi.user?.saldo < transaksi.transaksi?.price
                   ? "bg-red-500 text-white"
                   : "bg-blue-500 text-white"
               }`}
               variant="outline"
               onClick={handleMakePaymentClick}
-              disabled={transaksi.user?.saldo < transaksi.transaksi?.price}
+              disabled={
+                transaksi.transaksi?.status === "Success" ||
+                transaksi.user?.saldo < transaksi.transaksi?.price
+              }
             >
-              Make Payment
+              {transaksi.transaksi?.status === "Success"
+                ? "Paid"
+                : "Make Payment"}
             </Button>
           </CardFooter>
         </Card>
@@ -298,7 +300,10 @@ const Payment = () => {
                 <Button
                   className="w-full mt-4"
                   variant="outline"
-                  onClick={handleCloseModal}
+                  onClick={() => {
+                    handleCloseModal();
+                    handleConfirmPayment();
+                  }}
                 >
                   Confirm Payment
                 </Button>
