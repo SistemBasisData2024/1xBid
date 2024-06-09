@@ -54,6 +54,8 @@ const TokoDetails = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
   const [isEditProductModalOpen, setEditProductModalOpen] = useState(false);
+  const [isDeleteProductModalOpen, setDeleteProductModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const [editData, setEditData] = useState({
     nama_toko: "Toko Sukses",
     deskripsi: "Toko yang menjual berbagai macam barang berkualitas.",
@@ -252,6 +254,16 @@ const TokoDetails = () => {
     }
   };
 
+  const handleDeleteProductModalOpen = (barang_id) => {
+    setSelectedProductId(barang_id);
+    setDeleteProductModalOpen(true);
+  };
+
+  const handleDeleteProductModalClose = () => {
+    setSelectedProductId(null);
+    setDeleteProductModalOpen(false);
+  };
+
   const handleEditBarang = (barang) => {
     setNewProduct(barang);
   };
@@ -354,38 +366,12 @@ const TokoDetails = () => {
                                 <DropdownMenuItem
                                   onClick={(event) => {
                                     event.stopPropagation();
+                                    handleDeleteProductModalOpen(
+                                      item.barang_id
+                                    );
                                   }}
                                 >
-                                  <Dialog>
-                                    <DialogTrigger asChild>
-                                      <span>Delete</span>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                      <DialogTitle>
-                                        Confirm deletion
-                                      </DialogTitle>
-                                      <DialogDescription>
-                                        Are you sure you want to delete this
-                                        product?
-                                      </DialogDescription>
-                                      <DialogFooter>
-                                        <Button variant="outline">No</Button>
-                                        <Button
-                                          variant="destructive"
-                                          onClick={(event) => {
-                                            // Prevent the dialog from closing and stop propagation
-                                            event.preventDefault();
-                                            event.stopPropagation();
-                                            handleDeleteBarangSubmit(
-                                              item.barang_id
-                                            );
-                                          }}
-                                        >
-                                          Yes
-                                        </Button>
-                                      </DialogFooter>
-                                    </DialogContent>
-                                  </Dialog>
+                                  Delete
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -712,6 +698,40 @@ const TokoDetails = () => {
                     Edit Product
                   </Button>
                 </form>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
+      )}
+
+      {selectedProductId && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+          <section className="min-h-screen flex items-center justify-center">
+            <Card className="mx-auto max-w-md">
+              <CardHeader>
+                <CardTitle className="text-xl">Confirm Deletion</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-lg">
+                  Are you sure you want to delete this product?
+                </p>
+                <div className="mt-4 flex justify-center space-x-4">
+                  <Button
+                    variant="outline"
+                    onClick={handleDeleteProductModalClose}
+                  >
+                    No
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      handleDeleteBarangSubmit(item.barang_id);
+                      handleDeleteProductModalClose();
+                    }}
+                  >
+                    Yes
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </section>
