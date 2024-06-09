@@ -29,3 +29,5 @@ Website ini memiliki beberapa fitur utama, yaitu:
 - **Authentication**         : JWT (JSON Web Token)
 - **Real-time Communication**: Socket.io
 
+## UML
+![UML1xBid](https://github.com/SistemBasisData2024/1xBid/assets/144208794/4cecb0ce-519a-4d85-96ec-421500923af4)
