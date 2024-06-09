@@ -109,5 +109,4 @@ npm run dev
 
 # Progress Report
 ![Screenshot 2024-05-26 203554](https://github.com/SistemBasisData2024/1xBid/assets/144208794/1d05eb6f-79fd-4f14-9ccb-be33fe7ccc72)
-
-![messageImage_1717860619535](https://github.com/SistemBasisData2024/1xBid/assets/144208794/f2c37a20-e3e4-4d45-93a3-fec1dd1ac904)
+![messageImage_1717860619535](https://github.com/SistemBasisData2024/1xBid/assets/144208794/249a3290-1282-4709-8843-9feb45997673)
