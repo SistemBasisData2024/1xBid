@@ -94,15 +94,15 @@ npm run dev
 ### 2. Signup Page
 ![Screenshot 2024-06-09 185806](https://github.com/SistemBasisData2024/1xBid/assets/144208794/290fcdbf-6803-4dda-b4f9-9d3a0df06d28)
 ### 3. Homepage
-![messageImage_1717951053953](https://github.com/SistemBasisData2024/1xBid/assets/144208794/1b55f692-809b-4532-baf7-c90da73a6035)
+![ss 01](https://github.com/user-attachments/assets/f18e1816-8256-45c1-a87a-64b3779b63e3)
 ### 4. Profile Page
 ![Screenshot 2024-06-09 190726](https://github.com/SistemBasisData2024/1xBid/assets/144208794/e5ec9472-e7b9-48f1-8083-4ff33c6e31e6)
 ### 5. Toko Details Page
-![Screenshot 2024-06-09 190740](https://github.com/SistemBasisData2024/1xBid/assets/144208794/77ede12d-c4cc-4c70-8560-468bcdb89a29)
+![SS 2](https://github.com/user-attachments/assets/796df419-8576-430c-b1e7-e0a81c32e65c)
 ### 6. Product Page
-![Screenshot 2024-06-09 192651](https://github.com/SistemBasisData2024/1xBid/assets/144208794/d75ba462-5389-4aeb-a028-2ca392d2c062)
+![SS 3](https://github.com/user-attachments/assets/b072cb1c-da9e-422e-b1a3-65f7d7f28aae)
 ### 7. OnBid Page
-![Screenshot 2024-06-09 190822](https://github.com/SistemBasisData2024/1xBid/assets/144208794/707cb70f-6e3b-435a-b7b5-964ccdd66ca9)
+![SS 4](https://github.com/user-attachments/assets/0ccab2a2-0337-4c6c-9cd5-403afc8381ff)
 ### 8. Payment Page
 ![Screenshot 2024-06-09 191035](https://github.com/SistemBasisData2024/1xBid/assets/144208794/8c50d2b2-c708-4503-a8db-894321270490)
 
