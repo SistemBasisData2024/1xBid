@@ -1,6 +1,6 @@
 # 1xBid
 ## *Kelompok 24 Sistem Basis Data*
-Merupakan sebuah website yang dirancang untuk memfasilitasi proses pelelangan barang (budak). Website ini memberikan kesempatan bagi user untuk berpartisipasi dalam lelang, baik sebagai penawar maupun sebagai penjual, disertai interface yang user-friendly dan fitur yang lengkap. 
+Merupakan sebuah website yang dirancang untuk memfasilitasi proses pelelangan barang. Website ini memberikan kesempatan bagi user untuk berpartisipasi dalam lelang, baik sebagai penawar maupun sebagai penjual, disertai interface yang user-friendly dan fitur yang lengkap. 
 
 ### Anggota Kelompok
 - [Giovan Christoffel Sihombing](https://github.com/MorpKnight) - 2206816084
